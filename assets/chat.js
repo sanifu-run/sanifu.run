@@ -201,5 +201,6 @@ async function briefAction(action){if(asking)return;busy(true);briefStatus.textC
 document.getElementById('brief-generate').onclick=()=>briefAction('generate');document.getElementById('brief-save').onclick=()=>briefAction('save');document.getElementById('brief-approve').onclick=()=>briefAction('approve');briefText.oninput=()=>{document.getElementById('brief-approve').disabled=true;briefStatus.textContent='Unsaved edits. Save before approving.'};document.getElementById('brief-download').onclick=()=>downloadBrief(briefText.value);
 document.querySelectorAll('[data-interest]').forEach(b=>b.addEventListener('click',()=>{if(!asking&&!unanswered){input.value=b.dataset.interest==='ml'?'I would like to explore an ML project.':b.dataset.interest==='software'?'I would like to build my own app.':'I would like help finding a small project to learn with.';input.focus()}}));
 
+form.hidden=false;
 if(token){options();restore()}else fresh();
 })();

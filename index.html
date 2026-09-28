@@ -51,7 +51,7 @@
               <button type="button">What is your email and phone number?</button>
               <button type="button">What is your business address?</button>
             </div>
-            <form id="askForm">
+            <form id="askForm" hidden>
               <label class="sr-only" for="q">Your message</label>
               <textarea id="q" name="message" rows="1" maxlength="1000" placeholder="Ask anything…" required></textarea>
               <button id="voiceBtn" type="button" hidden>Dictate</button>
@@ -89,7 +89,7 @@
         <details id="manual" class="manual-fallback">
           <summary>Prefer to write a brief yourself?</summary>
           <p>This form stays in your browser. Download the brief and bring it to your free call.</p>
-          <form id="manual-form">
+          <form id="manual-form" hidden>
             <label>Your project or area of interest<textarea name="Project" rows="2" required></textarea></label>
             <label>Your experience and what you’ve tried<textarea name="Experience" rows="2"></textarea></label>
             <label>What you’d like to do independently afterward<textarea name="Learning goal" rows="2"></textarea></label>
