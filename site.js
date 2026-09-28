@@ -1,6 +1,7 @@
 'use strict';
 function downloadBrief(text,name='sanifu-learner-brief.txt'){const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 document.getElementById('manual-form').addEventListener('submit',event=>{event.preventDefault();const data=new FormData(event.currentTarget);const text='Sanifu learner brief — prepared locally, not submitted\n\n'+Array.from(data,([k,v])=>k+':\n'+String(v).trim()).join('\n\n');downloadBrief(text);document.getElementById('manual-status').textContent='Your brief was downloaded. Nothing was submitted. Bring it to your free call.'});
+document.getElementById('manual-form').hidden=false;
 
 const backgroundVideo=document.getElementById('chat-background-video');
 const configuredVideoUrl=window.SANIFU_CONFIG?.videoUrl;

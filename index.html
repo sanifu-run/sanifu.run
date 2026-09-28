@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#99001d">
-  <meta name="description" content="Ask Sanifu what you could build. David Ndungu teaches private, live software and ML workshops shaped around your project.">
+  <meta name="description" content="Personalized training in AI-assisted software development and ML engineering. Build a small project with David Ndungu’s guidance. Start with a free scope call.">
   <meta property="og:title" content="Sanifu — What would you like to build?">
-  <meta property="og:description" content="Explore an idea, ask a question, and find a practical first step.">
+  <meta property="og:description" content="Bring an idea or choose a small project. Learn a repeatable method in a private workshop shaped around your needs.">
   <meta property="og:image" content="https://sanifu.run/assets/brand/sanifu-logo-approved.png">
   <link rel="canonical" href="https://sanifu.run/">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
@@ -22,7 +22,7 @@
       <a class="brand" href="/" aria-label="Sanifu home"><img src="assets/brand/sanifu-logo-approved.png" width="2172" height="724" alt="Sanifu"></a>
       <nav class="utility-nav" aria-label="Useful links">
         <a href="privacy.html">Privacy</a>
-        <a href="https://cal.com/david-ndungu/discovery" target="_blank" rel="noopener noreferrer">Book a free call</a>
+        <a href="https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&amp;utm_medium=website&amp;utm_campaign=sanifu_pilot" target="_blank" rel="noopener noreferrer">Book a free call</a>
       </nav>
     </header>
 
@@ -42,6 +42,7 @@
             <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested messages; scroll sideways for more">
               <p>Try asking (scroll for more)</p>
               <button type="button">I have an app idea. Where do I start?</button>
+              <button type="button">How do I check that an AI-built app works?</button>
               <button type="button">What could I automate in my work?</button>
               <button type="button">How can I build software without knowing how to code?</button>
               <button type="button">Can you help me build and train an ML model?</button>
@@ -50,7 +51,7 @@
               <button type="button">What is your email and phone number?</button>
               <button type="button">What is your business address?</button>
             </div>
-            <form id="askForm">
+            <form id="askForm" hidden>
               <label class="sr-only" for="q">Your message</label>
               <textarea id="q" name="message" rows="1" maxlength="1000" placeholder="Ask anything…" required></textarea>
               <button id="voiceBtn" type="button" hidden>Dictate</button>
@@ -88,7 +89,7 @@
         <details id="manual" class="manual-fallback">
           <summary>Prefer to write a brief yourself?</summary>
           <p>This form stays in your browser. Download the brief and bring it to your free call.</p>
-          <form id="manual-form">
+          <form id="manual-form" hidden>
             <label>Your project or area of interest<textarea name="Project" rows="2" required></textarea></label>
             <label>Your experience and what you’ve tried<textarea name="Experience" rows="2"></textarea></label>
             <label>What you’d like to do independently afterward<textarea name="Learning goal" rows="2"></textarea></label>
@@ -99,7 +100,7 @@
         </details>
       </div>
     </main>
-    <footer class="site-footer"><span>Private software and ML workshops with David Ndungu.</span><a href="privacy.html">Privacy</a><a href="https://cal.com/david-ndungu/discovery" target="_blank" rel="noopener noreferrer">Free scope call</a></footer>
+    <footer class="site-footer"><span>Private software and ML workshops with David Ndungu.</span><a href="privacy.html">Privacy</a><a href="https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&amp;utm_medium=website&amp;utm_campaign=sanifu_pilot" target="_blank" rel="noopener noreferrer">Free scope call</a></footer>
   </div>
   <script src="config.js"></script>
   <script src="config.local.js" onerror="void 0"></script>
