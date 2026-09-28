@@ -12,15 +12,15 @@ if(!endpoint){
  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus()}
  document.querySelectorAll('[data-chat-open]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();open()}));launch.onclick=open;document.getElementById('chat-close').onclick=close;
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)close()});
- form.hidden=true;document.querySelector('.chat-controls').hidden=true;document.querySelector('.chat-actions').hidden=true;
+ form.hidden=true;document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
  document.getElementById('chat-suggestions').hidden=true;
- const p=document.createElement('p');p.textContent='The AI intake is not connected yet. You can still prepare a brief or book your free fit-and-scope call.';thread.append(p);
- const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{close();document.getElementById('manual').open=true};thread.append(manual,document.createElement('br'));
- const call=document.createElement('a');call.href='https://cal.com/david-ndungu/discovery';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';thread.append(call);
+ const fallback=document.createElement('div');fallback.className='offline-bubble';const p=document.createElement('p');p.textContent='The AI intake is not connected yet. You can still prepare a brief or book your free fit-and-scope call.';fallback.append(p);
+ const choices=document.createElement('div');choices.className='offline-options';const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
+ const call=document.createElement('a');call.href='https://cal.com/david-ndungu/discovery';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.append(fallback);
  status.textContent='No conversation has been submitted.';return;
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
-const greeting='I’m Sanifu’s AI intake assistant. What would you like to build or learn? If you’re still exploring, tell me a little about your work or interests.';
+const greeting='What would you like to build? Bring an app idea, a work problem, or a question. I’ll help you find a practical first step.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
 let briefSnapshot=null;
@@ -39,7 +39,7 @@ function render(text){
   if(url&&url.href==='https://cal.com/david-ndungu/discovery'){const button=document.createElement('button');button.type='button';button.className='retry';button.dataset.bookCall='';button.textContent=match[1];button.onclick=openBooking;fragment.append(button)}else if(url&&url.protocol==='https:'&&(['sanifu.run','www.sanifu.run','cal.com','ajent.social','github.com','kazi.sire.run','sire.run'].includes(url.hostname)||url.href==='https://ndungu.dev/about/')){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
  }plain(text.slice(offset));return fragment;
 }
-function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;const body=document.createElement('div');body.className='bubble';body.append(render(text));row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
+function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;row.setAttribute('aria-label',role==='ai'?'Sanifu':'You');const body=document.createElement('div');body.className='bubble';body.append(render(text));row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
 function retry(body,message,action){body.textContent=message+' ';const button=document.createElement('button');button.type='button';button.className='retry';button.textContent='Try again';button.onclick=()=>{if(!asking)action()};body.append(button)}
 async function request(url,init={},forToken=token){const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),70000);try{const response=await fetch(url,{...init,headers:{'Content-Type':'application/json','X-Conversation-Token':forToken},signal:controller.signal,cache:'no-store'});if(!response.ok){const messages={409:'This conversation has another reply in progress. Wait a moment, then retry.',413:'This conversation is full. Start a new chat to continue.',429:'The chat has reached its hourly limit. Please try later or book a call below.',503:'The assistant or saved chats are unavailable. Please try again.',502:'The AI service could not answer just now.'};const err=new Error(messages[response.status]||'Your request could not be completed.');err.status=response.status;throw err}return response.status===204?null:response.json()}finally{clearTimeout(timeout)}}
 function errorText(err){return err.name==='AbortError'?'The request took too long. Your message may already be saved.':err instanceof TypeError?'The chat could not be reached.':err.message}
@@ -109,7 +109,7 @@ function showBooking(b){
  }else{
   element('p','We cannot yet confirm the outcome. Check your email for a Cal.com invitation or contact David before making another booking. This chat will not submit the appointment again.',c);
   bookingButton(c,'Refresh booking status',refreshBooking);
-  const a=element('a','Contact David',c);a.href='https://sanifu.run/#about';a.target='_blank';a.rel='noopener noreferrer';
+  const a=element('a','Email David',c);a.href='mailto:david@ndungu.dev';
  }
  thread.scrollTop=thread.scrollHeight;
 }

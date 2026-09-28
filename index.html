@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#b40020">
+  <meta name="theme-color" content="#99001d">
   <meta name="description" content="Ask Sanifu what you could build. David Ndungu teaches private, live software and ML workshops shaped around your project.">
   <meta property="og:title" content="Sanifu — What would you like to build?">
   <meta property="og:description" content="Explore an idea, ask a question, and find a practical first step.">
@@ -26,30 +26,20 @@
     </header>
 
     <main id="main" class="stage">
-      <div class="stage-intro">
-        <h1>What would you like to build?</h1>
-        <p>Bring an idea, a problem at work, or simple curiosity. Ask Sanifu’s AI guide for a useful first step.</p>
-        <p class="offer-note">David teaches private, live software and ML workshops shaped around your project. A free 20–30 minute call helps you decide whether it fits.</p>
-      </div>
-
+      <h1 class="sr-only">What would you like to build?</h1>
+      <img class="stage-mark" src="assets/brand/sanifu-mark-approved.svg" width="240" height="180" alt="" aria-hidden="true">
       <div class="conversation-column">
         <div id="chat" data-open="true">
-          <button id="chat-launcher" class="chat-launcher" aria-expanded="true" aria-controls="chat-panel" hidden>Open chat</button>
+          <button id="chat-launcher" aria-expanded="true" aria-controls="chat-panel" hidden>Open chat</button>
           <section id="chat-panel" class="chat-panel" aria-label="Sanifu AI conversation">
             <header class="chat-heading">
               <div><strong>Ask Sanifu</strong><p>AI guide for software and ML learning</p></div>
               <button id="chat-close" type="button" aria-label="Close chat" hidden>×</button>
             </header>
-            <p class="chat-disclosure">This is an AI assistant; its answers may be imperfect. David can review saved chats. Don’t share secrets or private client information. <a href="privacy.html">How your chat is handled</a></p>
-            <div class="chat-controls">
-              <label class="sr-only" for="chat-history">Saved conversations</label>
-              <select id="chat-history"></select>
-              <button id="chat-new" type="button">New chat</button>
-              <button id="chat-delete" type="button">Delete</button>
-            </div>
+            <p class="chat-disclosure">AI can make mistakes. David can review saved chats. Please don’t share secrets or private client information. <a href="privacy.html">Privacy</a></p>
             <div id="thread" role="log" aria-live="polite" aria-label="Conversation"></div>
-            <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested messages">
-              <p>Try asking</p>
+            <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested messages; scroll sideways for more">
+              <p>Try asking (scroll for more)</p>
               <button type="button">I have an app idea. Where do I start?</button>
               <button type="button">What could I automate in my work?</button>
               <button type="button">How can I build software without knowing how to code?</button>
@@ -61,11 +51,20 @@
             </div>
             <form id="askForm">
               <label class="sr-only" for="q">Your message</label>
-              <textarea id="q" name="message" rows="2" maxlength="1000" placeholder="Ask anything about your idea or the workshops" required></textarea>
+              <textarea id="q" name="message" rows="1" maxlength="1000" placeholder="Ask anything…" required></textarea>
               <button id="voiceBtn" type="button" hidden>Dictate</button>
-              <button type="submit">Send</button>
+              <button type="submit" aria-label="Send message"><span aria-hidden="true">↑</span></button>
             </form>
             <p id="chat-status" role="status"></p>
+            <details id="chat-history-wrap" class="history-menu">
+              <summary>Saved conversations</summary>
+              <div class="chat-controls">
+                <label class="sr-only" for="chat-history">Saved conversations</label>
+                <select id="chat-history"></select>
+                <button id="chat-new" type="button">New chat</button>
+                <button id="chat-delete" type="button">Delete</button>
+              </div>
+            </details>
             <div class="chat-actions">
               <button id="brief-generate" type="button">Review my brief</button>
               <button type="button" data-book-call>Book a free call</button>
@@ -99,7 +98,7 @@
         </details>
       </div>
     </main>
-    <footer class="site-footer"><span>Learn to build it yourself.</span><a href="privacy.html">Privacy</a><a href="https://cal.com/david-ndungu/discovery" target="_blank" rel="noopener noreferrer">Free scope call</a></footer>
+    <footer class="site-footer"><span>Private software and ML workshops with David Ndungu.</span><a href="privacy.html">Privacy</a><a href="https://cal.com/david-ndungu/discovery" target="_blank" rel="noopener noreferrer">Free scope call</a></footer>
   </div>
   <script src="config.js"></script>
   <script src="config.local.js" onerror="void 0"></script>
