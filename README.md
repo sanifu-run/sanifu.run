@@ -8,6 +8,8 @@ Run `python3 -m http.server 8790 --bind 127.0.0.1` and open `http://127.0.0.1:87
 
 The production `config.js` starts with an empty `chatEndpoint`; it shows an honest unavailable state. For synthetic browser checks, run the opt-in fixture described in `../chat/README.md` and create ignored `config.local.js` with `window.SANIFU_CONFIG = { chatEndpoint: 'http://127.0.0.1:8791/api/ask' };`. Remove the local override when finished. No API secret belongs in browser files.
 
+The chat background can use a CloudFront video URL in `config.js` once the exact reference video's publishing rights and delivery have been verified. The private S3 bucket, CloudFront distribution and upload workflow are defined in [`infra/`](infra/README.md). The default empty `videoUrl` keeps the original static Sanifu background.
+
 ## Chat contract
 
 The website uses the Sanifu chat service's `/api/ask`, `/api/conversation`, `/api/conversation/title`, `/api/brief` and `/api/booking` endpoints. Messages use a browser-held recovery token. A learner can edit and approve only the exact saved brief version. A later message requires a new review. Cal.com booking has a separate review and confirmation step; the page also links directly to the free call.
