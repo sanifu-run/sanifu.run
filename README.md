@@ -8,9 +8,9 @@ Run `python3 -m http.server 8790 --bind 127.0.0.1` and open `http://127.0.0.1:87
 
 The production `config.js` starts with an empty `chatEndpoint`; it shows an honest unavailable state with prepared quick answers to common first questions. These are labeled as prepared text and do not create a conversation or send data. For synthetic browser checks, run the opt-in fixture described in `../chat/README.md` and create ignored `config.local.js` with `window.SANIFU_CONFIG = { chatEndpoint: 'http://127.0.0.1:8791/api/ask' };`. Remove the local override when finished. No API secret belongs in browser files.
 
-The chat background can use a CloudFront video URL in `config.js` once the exact reference video's publishing rights and delivery have been verified. The private S3 bucket, CloudFront distribution and upload workflow are defined in [`infra/`](infra/README.md). The default empty `videoUrl` keeps the original static Sanifu background.
+The background uses the existing video URL from the preserved v1 template, as requested for this design revision. No new video hosting has been provisioned. Desktop mouse movement scrubs the video; touch and reduced-motion users see a still frame. Failed video loading falls back to the static crimson background. The existing infrastructure scripts remain optional and require separate authorization for rehosting and spend.
 
-The chat background can use a CloudFront video URL in `config.js` once the exact reference video's publishing rights and delivery have been verified. The private S3 bucket, CloudFront distribution and upload workflow are defined in [`infra/`](infra/README.md). The default empty `videoUrl` keeps the original static Sanifu background.
+The composer stays visible offline. Enter sends; Shift+Enter adds a line. Prepared questions receive labeled local answers; other questions receive an explicit unavailable response and are not transmitted or persisted. Privacy is linked only in the footer. Further questions, workshop details, saved chats and the manual brief are under More options.
 
 ## Chat contract
 

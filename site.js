@@ -20,3 +20,7 @@ if(backgroundVideo&&configuredVideoUrl){
     backgroundVideo.src=url.href;
   }catch{/* Keep the static Sanifu background when video configuration is invalid. */}
 }
+
+// Grow the composer without allowing long drafts to push it off-screen.
+const composerInput=document.getElementById('q');
+composerInput.addEventListener('input',()=>{composerInput.style.height='auto';composerInput.style.height=Math.min(composerInput.scrollHeight,130)+'px'});

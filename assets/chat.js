@@ -11,13 +11,13 @@ if(!endpoint){
  panel.classList.add('unavailable');
  panel.setAttribute('aria-label','Sanifu prepared questions and answers');
  const disclosure=document.querySelector('.chat-disclosure');
- disclosure.replaceChildren(document.createTextNode('Prepared answers only. No conversation is submitted or saved here. Please don’t share secrets or private client information. '),disclosure.querySelector('a'));
+ disclosure.textContent='Prepared answers only. No conversation is submitted or saved here. Please don’t share secrets or private client information.';
  document.querySelector('.chat-footnote').textContent='The manual brief is not sent to David. Download it to bring to your free call; he designs your custom agenda afterward.';
  function open(){panel.hidden=false;launch.setAttribute('aria-expanded','true');document.getElementById('chat-close').focus()}
  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus()}
  document.querySelectorAll('[data-chat-open]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();open()}));launch.onclick=open;document.getElementById('chat-close').onclick=close;
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)close()});
- form.hidden=true;document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden&&!launch.hidden)close()});
+ document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
  const suggestions=document.getElementById('chat-suggestions');
  const quickAnswers=new Map([
   ['I have an app idea. Where do I start?','Try this: “When [person] needs to [task], they should be able to [result].” Then name one action and one check that would show it works. A small request tracker with sample data is one possible first exercise; David chooses the actual workshop scope with you on the free call.'],
@@ -30,13 +30,23 @@ if(!endpoint){
  ]);
  suggestions.hidden=false;suggestions.setAttribute('aria-label','Prepared answers while the AI is offline');suggestions.querySelector('p').textContent='Quick answers';
  suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.textContent.trim())});
- const fallback=document.createElement('div');fallback.className='offline-bubble';const p=document.createElement('p');p.textContent='The AI intake is being prepared. Choose a question above for a useful first step, write a brief, or book a free call.';fallback.append(p);
- const offer=document.createElement('p');offer.textContent='Private four-hour software and ML workshops: you build a small project with David’s guidance. The first five paid pilot workshops are $300 each, subject to scope and availability, with preparation included. David designs your agenda after a free 20–30 minute call; deployment depends on scope.';fallback.append(offer);
- const answer=document.createElement('div');answer.className='offline-bubble offline-answer';answer.hidden=true;
- suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(!button||button.hidden)return;const question=button.textContent.trim();answer.replaceChildren(document.createTextNode(quickAnswers.get(question)||''));if(question==='Who is David?'){const link=document.createElement('a');link.href='https://ndungu.dev/about/';link.textContent=' Read his published biography.';link.target='_blank';link.rel='noopener noreferrer';answer.append(link)}answer.hidden=false;suggestions.querySelectorAll('button').forEach(item=>item.setAttribute('aria-pressed',String(item===button)))});
- const choices=document.createElement('div');choices.className='offline-options';const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
- const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.before(suggestions);thread.append(answer,fallback);
- status.textContent='No conversation has been submitted.';return;
+ const welcome=bubble('ai','Hi there. What can I help you with today?');
+ const choices=document.createElement('div');choices.className='offline-options';
+ const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
+ const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);
+ const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['Help me get started','I have an app idea. Where do I start?'],['Workshop cost','What does a workshop cost?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}welcome.append(primary);document.querySelector('.conversation-tools').append(choices);
+ function preparedReply(question){
+  bubble('user',question);
+  const text=quickAnswers.get(question)||'The AI intake is not connected yet, so I can’t answer a new question. Nothing was sent or saved. You can choose a prepared question, write a brief, or book a free call.';
+  const answer=bubble('ai',text);
+  if(question==='Who is David?'){const link=document.createElement('a');link.href='https://ndungu.dev/about/';link.textContent=' Read his published biography.';link.target='_blank';link.rel='noopener noreferrer';answer.append(link)}
+  status.textContent=quickAnswers.has(question)?'Prepared answer · not AI-generated':'AI offline · your message was not sent';
+  thread.scrollTop=thread.scrollHeight;
+ }
+ suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&!button.hidden)preparedReply(button.textContent.trim())});
+ form.addEventListener('submit',event=>{event.preventDefault();const question=input.value.trim();if(!question)return;preparedReply(question);input.value='';input.style.height='';input.focus({preventScroll:true})});
+ input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();form.requestSubmit()}});
+ form.hidden=false;status.textContent='Prepared answers · AI offline';thread.scrollTop=thread.scrollHeight;return;
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
@@ -60,16 +70,16 @@ function render(text){
   if(url&&url.href==='https://cal.com/david-ndungu/sanifu-scope'){const button=document.createElement('button');button.type='button';button.className='retry';button.dataset.bookCall='';button.textContent=match[1];button.onclick=openBooking;fragment.append(button)}else if(url&&url.protocol==='https:'&&(['sanifu.run','www.sanifu.run','cal.com','ajent.social','github.com','kazi.sire.run','sire.run'].includes(url.hostname)||url.href==='https://ndungu.dev/about/')){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
  }plain(text.slice(offset));return fragment;
 }
-function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;row.setAttribute('aria-label',role==='ai'?'Sanifu':'You');const body=document.createElement('div');body.className='bubble';body.append(render(text));row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
-function retry(body,message,action){body.textContent=message+' ';const button=document.createElement('button');button.type='button';button.className='retry';button.textContent='Try again';button.onclick=()=>{if(!asking)action()};body.append(button)}
+function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;row.setAttribute('aria-label',role==='ai'?'Sanifu':'You');const body=document.createElement('div');body.className='bubble';const label=document.createElement('div');label.className='message-label';const avatar=document.createElement('span');avatar.className='message-avatar';avatar.setAttribute('aria-hidden','true');avatar.textContent=role==='ai'?'S':'Y';label.append(avatar,document.createTextNode(role==='ai'?'Sanifu':'You'));const content=document.createElement('div');content.className='message-content';content.append(endpoint?render(text):document.createTextNode(text));body.append(label,content);row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
+function retry(body,message,action){const content=body.querySelector('.message-content')||body;content.textContent=message+' ';const button=document.createElement('button');button.type='button';button.className='retry';button.textContent='Try again';button.onclick=()=>{if(!asking)action()};content.append(button)}
 async function request(url,init={},forToken=token){const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),70000);try{const response=await fetch(url,{...init,headers:{'Content-Type':'application/json','X-Conversation-Token':forToken},signal:controller.signal,cache:'no-store'});if(!response.ok){const messages={409:'This conversation has another reply in progress. Wait a moment, then retry.',413:'This conversation is full. Start a new chat to continue.',429:'The chat has reached its hourly limit. Please try later or book a call below.',503:'The assistant or saved chats are unavailable. Please try again.',502:'The AI service could not answer just now.'};const err=new Error(messages[response.status]||'Your request could not be completed.');err.status=response.status;throw err}return response.status===204?null:response.json()}finally{clearTimeout(timeout)}}
 function errorText(err){return err.name==='AbortError'?'The request took too long. Your message may already be saved.':err instanceof TypeError?'The chat could not be reached.':err.message}
 function setTitle(forToken,value){if(typeof value!=='string'||isPendingTitle(value))return;const entry=chats.find(c=>c.token===forToken);if(entry){entry.title=value.trim().slice(0,80);options()}}
 function generateTitle(forToken){if(titlePending.has(forToken))return titlePending.get(forToken);const run=(async()=>{try{let data;try{data=await request(titleURL,{method:'POST',body:'{}'},forToken)}catch(err){if(err.status!==409)throw err;const current=await request(conversationURL,{},forToken);data=current.title&&!isPendingTitle(current.title)?current:await request(titleURL,{method:'POST',body:'{}'},forToken)}setTitle(forToken,data.title)}catch{/* Keep a neutral local label when title generation is unavailable. */}finally{titlePending.delete(forToken)}})();titlePending.set(forToken,run);return run}
 async function ask(q,id=crypto.randomUUID(),addUser=true){
- if(asking)return;busy(true);suggestions.hidden=true;input.value='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
+ if(asking)return;busy(true);suggestions.hidden=true;input.value='';input.style.height='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
  const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Sanifu conversation';options()}
- try{const data=await request(endpoint,{method:'POST',body:JSON.stringify({message:q,requestId:id})});if(typeof data.answer!=='string'||!data.answer.trim())throw new Error('The assistant returned an empty answer.');pending.replaceChildren(render(data.answer));unanswered=false;briefSnapshot=null;document.getElementById("brief-approve").disabled=true;document.getElementById("brief-status").textContent="Conversation updated. Review your brief again before approving.";notice();generateTitle(token)}
+ try{const data=await request(endpoint,{method:'POST',body:JSON.stringify({message:q,requestId:id})});if(typeof data.answer!=='string'||!data.answer.trim())throw new Error('The assistant returned an empty answer.');pending.querySelector('.message-content').replaceChildren(render(data.answer));unanswered=false;briefSnapshot=null;document.getElementById("brief-approve").disabled=true;document.getElementById("brief-status").textContent="Conversation updated. Review your brief again before approving.";notice();generateTitle(token)}
  catch(err){unanswered=true;retry(pending,errorText(err),()=>{pending.parentElement.remove();ask(q,id,false)})}
  finally{pending.classList.remove('pending-dots');busy(false);thread.scrollTop=thread.scrollHeight;if(!unanswered)input.focus({preventScroll:true})}
 }
@@ -87,7 +97,7 @@ newButton.onclick=()=>{if(!asking)fresh()};
 select.onchange=()=>{if(asking)return;token=select.value;save();restore()};
 deleteButton.onclick=async()=>{if(asking||!confirm('Delete this conversation from saved chats and David’s transcript archive? This does not cancel a Cal.com booking.'))return;busy(true);try{await request(conversationURL,{method:'DELETE'});chats=chats.filter(c=>c.token!==token);save(token);fresh();status.textContent='Conversation deleted. Start a new chat when you’re ready.'}catch(err){status.textContent=errorText(err)}finally{busy(false)}};
 form.addEventListener('submit',e=>{e.preventDefault();if(bookingCard&&bookingCard.contains(e.submitter||document.activeElement))return;const q=input.value.trim();if(!unanswered&&q&&Array.from(q).length<=1000)ask(q)});
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();form.requestSubmit()}});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();form.requestSubmit()}});
 
 const bookingEndpoint=endpoint.replace(/\/ask$/,'/booking');
 function element(tag,text,parent){const node=document.createElement(tag);if(text)node.textContent=text;if(parent)parent.append(node);return node}
@@ -190,7 +200,7 @@ document.querySelectorAll('[data-book-call]').forEach(b=>b.onclick=openBooking);
 const widget=document.getElementById('chat'),panel=document.getElementById('chat-panel'),launcher=document.getElementById('chat-launcher'),closeButton=document.getElementById('chat-close');
 function setOpen(open){if(!widget||!panel)return;panel.hidden=!open;widget.dataset.open=String(open);launcher.setAttribute('aria-expanded',String(open));if(open){thread.scrollTop=thread.scrollHeight;if(!input.disabled)input.focus({preventScroll:true})}else launcher.focus({preventScroll:true})}
 if(launcher)launcher.onclick=()=>setOpen(true);if(closeButton)closeButton.onclick=()=>setOpen(false);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel&&!panel.hidden)setOpen(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel&&!panel.hidden&&!launcher.hidden)setOpen(false)});
 document.querySelectorAll('[data-chat-open]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'','#chat');setOpen(true)}));
 if(location.hash==='#chat')setOpen(true);window.addEventListener('hashchange',()=>{if(location.hash==='#chat')setOpen(true)});
 
