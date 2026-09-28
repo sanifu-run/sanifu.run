@@ -30,11 +30,12 @@ if(!endpoint){
  ]);
  suggestions.hidden=false;suggestions.setAttribute('aria-label','Prepared answers while the AI is offline');suggestions.querySelector('p').textContent='Quick answers';
  suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.textContent.trim())});
- const welcome=bubble('ai','Hi there. What can I help you with today?');
+ const welcome=bubble('ai','Want to build software or work through an ML idea? I can help you choose a first step.');
  const choices=document.createElement('div');choices.className='offline-options';
  const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
- const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);
- const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['Help me get started','I have an app idea. Where do I start?'],['Workshop cost','What does a workshop cost?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}welcome.append(primary);document.querySelector('.conversation-tools').append(choices);
+ const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';
+ const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['Build an app','I have an app idea. Where do I start?'],['Explore ML','Can you help me build and train an ML model?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}
+ const welcomeActions=document.createElement('div');welcomeActions.className='offline-options';welcomeActions.append(call);welcome.append(primary,welcomeActions);document.querySelector('.conversation-tools').append(choices);
  function preparedReply(question){
   bubble('user',question);
   const text=quickAnswers.get(question)||'The AI intake is not connected yet, so I can’t answer a new question. Nothing was sent or saved. You can choose a prepared question, write a brief, or book a free call.';
