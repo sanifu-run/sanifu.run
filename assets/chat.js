@@ -40,7 +40,7 @@ if(!endpoint){
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
-function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.trim().toLowerCase())}
+function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.toLowerCase().replace(/^[\s.!?…"']+|[\s.!?…"']+$/g,''))}
 const greeting='What would you like to build? Bring an app idea, a work problem, or a question. I’ll help you find a practical first step.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
@@ -48,7 +48,7 @@ let briefSnapshot=null;
 let asking=false,unanswered=false,persistent=true,chats=[],token='',booking=null,bookingCard=null;
 const titlePending=new Map();
 function randomToken(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('')}
-function save(deleted=''){try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){const known=new Map(stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string').map(c=>[c.token,{...c,title:c.title==='New conversation'?pendingTitle:c.title}]));for(const c of chats)known.set(c.token,{...c,title:c.title==='New conversation'?pendingTitle:c.title});known.delete(deleted);chats=Array.from(known.values())}localStorage.setItem(storageKey,JSON.stringify({current:token,chats}));persistent=true}catch{persistent=false}}
+function save(deleted=''){try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){const known=new Map(stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string').map(c=>[c.token,{...c,title:isPendingTitle(c.title)?pendingTitle:c.title}]));for(const c of chats)known.set(c.token,{...c,title:isPendingTitle(c.title)?pendingTitle:c.title});known.delete(deleted);chats=Array.from(known.values())}localStorage.setItem(storageKey,JSON.stringify({current:token,chats}));persistent=true}catch{persistent=false}}
 function notice(){status.textContent=persistent?'Saved for your next visit in this browser. David can review this conversation.':'David can review this conversation, but this browser cannot save its recovery key. Keep this page open to continue.'}
 function options(){save();select.replaceChildren();for(const c of chats){const option=document.createElement('option');option.value=c.token;option.textContent=c.title;select.append(option)}select.value=token;const title=chats.find(c=>c.token===token)?.title;document.getElementById('chat-current-title').textContent=title&&!isPendingTitle(title)?title:'AI guide for software and ML learning'}
 function briefReady(){const b=briefSnapshot?.brief;return !!b&&b.status!=='approved'&&b.sourceTurns===briefSnapshot.turns.length&&briefText.value===b.text}
