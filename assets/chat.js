@@ -124,7 +124,7 @@ function showBooking(b){
  }else{
   element('p','We cannot yet confirm the outcome. Check your email for a Cal.com invitation or contact David before making another booking. This chat will not submit the appointment again.',c);
   bookingButton(c,'Refresh booking status',refreshBooking);
-  const a=element('a','Email David',c);a.href='mailto:david@ndungu.dev';
+  const a=element('a','Contact David',c);a.href='https://ndungu.dev/contact/';a.target='_blank';a.rel='noopener noreferrer';
  }
  thread.scrollTop=thread.scrollHeight;
 }
