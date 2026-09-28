@@ -5,6 +5,7 @@ const form=document.getElementById('askForm');if(!form)return;
 const input=document.getElementById('q'),thread=document.getElementById('thread'),voice=document.getElementById('voiceBtn');
 const status=document.getElementById('chat-status'),select=document.getElementById('chat-history'),newButton=document.getElementById('chat-new'),deleteButton=document.getElementById('chat-delete');
 const endpoint=window.SANIFU_CONFIG?.chatEndpoint||'';
+const siteBookingUrl='https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&utm_medium=website&utm_campaign=sanifu_pilot';
 if(!endpoint){
  const panel=document.getElementById('chat-panel'),launch=document.getElementById('chat-launcher');
  panel.classList.add('unavailable');
@@ -34,7 +35,7 @@ if(!endpoint){
  const answer=document.createElement('div');answer.className='offline-bubble offline-answer';answer.hidden=true;
  suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(!button||button.hidden)return;const question=button.textContent.trim();answer.replaceChildren(document.createTextNode(quickAnswers.get(question)||''));if(question==='Who is David?'){const link=document.createElement('a');link.href='https://ndungu.dev/about/';link.textContent=' Read his published biography.';link.target='_blank';link.rel='noopener noreferrer';answer.append(link)}answer.hidden=false;suggestions.querySelectorAll('button').forEach(item=>item.setAttribute('aria-pressed',String(item===button)))});
  const choices=document.createElement('div');choices.className='offline-options';const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
- const call=document.createElement('a');call.href='https://cal.com/david-ndungu/sanifu-scope';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.before(suggestions);thread.append(answer,fallback);
+ const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.before(suggestions);thread.append(answer,fallback);
  status.textContent='No conversation has been submitted.';return;
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
@@ -98,7 +99,7 @@ function card(title){
  return bookingCard;
 }
 function when(start,zone){return new Intl.DateTimeFormat(undefined,{dateStyle:'full',timeStyle:'short',timeZone:zone}).format(new Date(start))+' · '+zone}
-function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href='https://cal.com/david-ndungu/sanifu-scope';a.target='_blank';a.rel='noopener noreferrer'}
+function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href=siteBookingUrl;a.target='_blank';a.rel='noopener noreferrer'}
 async function bookingRequest(body){
  const res=await request(bookingEndpoint,{method:'POST',body:JSON.stringify(body)});
  if(!res||typeof res.status!=='string')throw new Error('The booking response could not be read.');
