@@ -40,7 +40,7 @@ if(!endpoint){
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
-function isPendingTitle(value){return value===pendingTitle||value==='New conversation'}
+function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.trim().toLowerCase())}
 const greeting='What would you like to build? Bring an app idea, a work problem, or a question. I’ll help you find a practical first step.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
@@ -64,8 +64,8 @@ function bubble(role,text){const row=document.createElement('div');row.className
 function retry(body,message,action){body.textContent=message+' ';const button=document.createElement('button');button.type='button';button.className='retry';button.textContent='Try again';button.onclick=()=>{if(!asking)action()};body.append(button)}
 async function request(url,init={},forToken=token){const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),70000);try{const response=await fetch(url,{...init,headers:{'Content-Type':'application/json','X-Conversation-Token':forToken},signal:controller.signal,cache:'no-store'});if(!response.ok){const messages={409:'This conversation has another reply in progress. Wait a moment, then retry.',413:'This conversation is full. Start a new chat to continue.',429:'The chat has reached its hourly limit. Please try later or book a call below.',503:'The assistant or saved chats are unavailable. Please try again.',502:'The AI service could not answer just now.'};const err=new Error(messages[response.status]||'Your request could not be completed.');err.status=response.status;throw err}return response.status===204?null:response.json()}finally{clearTimeout(timeout)}}
 function errorText(err){return err.name==='AbortError'?'The request took too long. Your message may already be saved.':err instanceof TypeError?'The chat could not be reached.':err.message}
-function setTitle(forToken,value){if(typeof value!=='string'||!value.trim())return;const entry=chats.find(c=>c.token===forToken);if(entry){entry.title=value.trim().slice(0,80);options()}}
-function generateTitle(forToken){if(titlePending.has(forToken))return titlePending.get(forToken);const run=(async()=>{try{let data;try{data=await request(titleURL,{method:'POST',body:'{}'},forToken)}catch(err){if(err.status!==409)throw err;const current=await request(conversationURL,{},forToken);data=current.title?current:await request(titleURL,{method:'POST',body:'{}'},forToken)}setTitle(forToken,data.title)}catch{/* Keep a neutral local label when title generation is unavailable. */}finally{titlePending.delete(forToken)}})();titlePending.set(forToken,run);return run}
+function setTitle(forToken,value){if(typeof value!=='string'||isPendingTitle(value))return;const entry=chats.find(c=>c.token===forToken);if(entry){entry.title=value.trim().slice(0,80);options()}}
+function generateTitle(forToken){if(titlePending.has(forToken))return titlePending.get(forToken);const run=(async()=>{try{let data;try{data=await request(titleURL,{method:'POST',body:'{}'},forToken)}catch(err){if(err.status!==409)throw err;const current=await request(conversationURL,{},forToken);data=current.title&&!isPendingTitle(current.title)?current:await request(titleURL,{method:'POST',body:'{}'},forToken)}setTitle(forToken,data.title)}catch{/* Keep a neutral local label when title generation is unavailable. */}finally{titlePending.delete(forToken)}})();titlePending.set(forToken,run);return run}
 async function ask(q,id=crypto.randomUUID(),addUser=true){
  if(asking)return;busy(true);suggestions.hidden=true;input.value='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
  const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Sanifu conversation';options()}
@@ -77,7 +77,7 @@ async function restore(){
  if(asking)return;unanswered=false;busy(true);status.textContent='Loading saved conversation…';
  try{const data=await request(conversationURL);if(!Array.isArray(data.turns))throw new Error('The saved conversation could not be read.');thread.replaceChildren();suggestions.hidden=data.turns.length>0;if(!data.turns.length)bubble('ai',greeting);
  for(const turn of data.turns){bubble('user',turn.question);if(turn.completedAt)bubble('ai',turn.answer);else{unanswered=true;const pending=bubble('ai','');retry(pending,'This message is saved but has no completed reply yet.',()=>{pending.parentElement.remove();ask(turn.question,turn.id,false)})}}
- showBrief(data);if(data.title)setTitle(token,data.title);else if(data.turns.some(turn=>turn.completedAt))generateTitle(token);booking=data.booking||null;bookingCard=null;if(booking)showBooking(booking);notice();
+ showBrief(data);if(data.title&&!isPendingTitle(data.title))setTitle(token,data.title);else if(data.turns.some(turn=>turn.completedAt))generateTitle(token);booking=data.booking||null;bookingCard=null;if(booking)showBooking(booking);notice();
  }catch(err){unanswered=true;thread.replaceChildren();const body=bubble('ai','');retry(body,errorText(err),restore);status.textContent='Your saved conversation has not been cleared.'}
  finally{busy(false)}
 }
