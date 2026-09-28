@@ -8,6 +8,9 @@ const endpoint=window.SANIFU_CONFIG?.chatEndpoint||'';
 if(!endpoint){
  const panel=document.getElementById('chat-panel'),launch=document.getElementById('chat-launcher');
  panel.classList.add('unavailable');
+ panel.setAttribute('aria-label','Sanifu prepared questions and answers');
+ const disclosure=document.querySelector('.chat-disclosure');
+ disclosure.replaceChildren(document.createTextNode('Prepared answers only. No conversation is submitted or saved here. Please don’t share secrets or private client information. '),disclosure.querySelector('a'));
  function open(){panel.hidden=false;launch.setAttribute('aria-expanded','true');document.getElementById('chat-close').focus()}
  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus()}
  document.querySelectorAll('[data-chat-open]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();open()}));launch.onclick=open;document.getElementById('chat-close').onclick=close;
