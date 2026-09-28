@@ -15,6 +15,7 @@ if(!endpoint){
  form.hidden=true;document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
  document.getElementById('chat-suggestions').hidden=true;
  const fallback=document.createElement('div');fallback.className='offline-bubble';const p=document.createElement('p');p.textContent='The AI intake is not connected yet. You can still prepare a brief or book your free fit-and-scope call.';fallback.append(p);
+ const offer=document.createElement('p');offer.textContent='Sanifu offers private four-hour workshops in AI-assisted software development and ML engineering. You do most of the building with David’s guidance on a small project. After a free 20–30 minute scope call, David designs a custom agenda and sends a written proposal. Each of the first five paid pilot workshops is $300, subject to availability. Preparation is included; deployment depends on scope.';fallback.append(offer);
  const choices=document.createElement('div');choices.className='offline-options';const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
  const call=document.createElement('a');call.href='https://cal.com/david-ndungu/sanifu-scope';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.append(fallback);
  status.textContent='No conversation has been submitted.';return;

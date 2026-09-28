@@ -64,6 +64,7 @@ a { color: inherit; }
 .offline-bubble { width: 86%; margin-left: auto; padding: 1.1rem 1.3rem; border: 1px solid var(--glass-line); border-radius: var(--radius-large); background: var(--glass); box-shadow: var(--glass-shadow); backdrop-filter: blur(22px); line-height: 1.5; }
 .offline-bubble::before { content: "Ⓢ  Sanifu"; display: block; margin-bottom: .55rem; color: var(--muted-white); font-size: .78rem; }
 .offline-bubble p { margin: 0; }
+.offline-bubble p + p { margin-top: .7rem; }
 .offline-options { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-3); }
 .offline-options a { display: inline-flex; padding: .5rem .85rem; border: 1px solid var(--glass-line); border-radius: 99rem; background: var(--glass); font-size: .78rem; text-decoration: none; }
 .offline-options a:hover { background: var(--glass-strong); }
