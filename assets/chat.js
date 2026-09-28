@@ -54,7 +54,7 @@ if(!endpoint){
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
 function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.toLowerCase().replace(/^[\s.!?…"']+|[\s.!?…"']+$/g,''))}
-const greeting='Want to build software or work through an ML idea? Bring a project or a question. I’ll help you find a practical first step and see whether a guided workshop fits.';
+const greeting='Hi! I can help you explore a software or ML workshop. What’s your name and email so David can follow up with you? Sanifu will never sell your information or spam you. Sharing is optional — you can skip this and ask a question.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
 let briefSnapshot=null;
