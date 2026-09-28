@@ -20,6 +20,8 @@ if(!endpoint){
  status.textContent='No conversation has been submitted.';return;
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
+const pendingTitle='Start a conversation';
+function isPendingTitle(value){return value===pendingTitle||value==='New conversation'}
 const greeting='What would you like to build? Bring an app idea, a work problem, or a question. I’ll help you find a practical first step.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
@@ -27,9 +29,9 @@ let briefSnapshot=null;
 let asking=false,unanswered=false,persistent=true,chats=[],token='',booking=null,bookingCard=null;
 const titlePending=new Map();
 function randomToken(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('')}
-function save(deleted=''){try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){const known=new Map(stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string').map(c=>[c.token,c]));for(const c of chats)known.set(c.token,c);known.delete(deleted);chats=Array.from(known.values())}localStorage.setItem(storageKey,JSON.stringify({current:token,chats}));persistent=true}catch{persistent=false}}
+function save(deleted=''){try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){const known=new Map(stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string').map(c=>[c.token,{...c,title:c.title==='New conversation'?pendingTitle:c.title}]));for(const c of chats)known.set(c.token,{...c,title:c.title==='New conversation'?pendingTitle:c.title});known.delete(deleted);chats=Array.from(known.values())}localStorage.setItem(storageKey,JSON.stringify({current:token,chats}));persistent=true}catch{persistent=false}}
 function notice(){status.textContent=persistent?'Saved for your next visit in this browser. David can review this conversation.':'David can review this conversation, but this browser cannot save its recovery key. Keep this page open to continue.'}
-function options(){save();select.replaceChildren();for(const c of chats){const option=document.createElement('option');option.value=c.token;option.textContent=c.title;select.append(option)}select.value=token;const title=chats.find(c=>c.token===token)?.title;document.getElementById('chat-current-title').textContent=title&&title!=='New conversation'?title:'AI guide for software and ML learning'}
+function options(){save();select.replaceChildren();for(const c of chats){const option=document.createElement('option');option.value=c.token;option.textContent=c.title;select.append(option)}select.value=token;const title=chats.find(c=>c.token===token)?.title;document.getElementById('chat-current-title').textContent=title&&!isPendingTitle(title)?title:'AI guide for software and ML learning'}
 function briefReady(){const b=briefSnapshot?.brief;return !!b&&b.status!=='approved'&&b.sourceTurns===briefSnapshot.turns.length&&briefText.value===b.text}
 function busy(value){asking=value;document.querySelectorAll("#brief-panel button,#brief-generate").forEach(b=>b.disabled=value||unanswered);document.getElementById('brief-approve').disabled=value||unanswered||!briefReady();input.disabled=value||unanswered;voice.disabled=value||unanswered;form.querySelector('[type="submit"]').disabled=value||unanswered;select.disabled=value;newButton.disabled=value;deleteButton.disabled=value;document.querySelectorAll('[data-book-call]').forEach(b=>b.disabled=value||unanswered);form.setAttribute('aria-busy',String(value))}
 function render(text){
@@ -47,7 +49,7 @@ function setTitle(forToken,value){if(typeof value!=='string'||!value.trim())retu
 function generateTitle(forToken){if(titlePending.has(forToken))return titlePending.get(forToken);const run=(async()=>{try{let data;try{data=await request(titleURL,{method:'POST',body:'{}'},forToken)}catch(err){if(err.status!==409)throw err;const current=await request(conversationURL,{},forToken);data=current.title?current:await request(titleURL,{method:'POST',body:'{}'},forToken)}setTitle(forToken,data.title)}catch{/* The first-message title remains usable when title generation is unavailable. */}finally{titlePending.delete(forToken)}})();titlePending.set(forToken,run);return run}
 async function ask(q,id=crypto.randomUUID(),addUser=true){
  if(asking)return;busy(true);suggestions.hidden=true;input.value='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
- const entry=chats.find(c=>c.token===token);if(entry&&entry.title==='New conversation'){entry.title=q.slice(0,80);options()}
+ const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title=q.slice(0,80);options()}
  try{const data=await request(endpoint,{method:'POST',body:JSON.stringify({message:q,requestId:id})});if(typeof data.answer!=='string'||!data.answer.trim())throw new Error('The assistant returned an empty answer.');pending.replaceChildren(render(data.answer));unanswered=false;briefSnapshot=null;document.getElementById("brief-approve").disabled=true;document.getElementById("brief-status").textContent="Conversation updated. Review your brief again before approving.";notice();generateTitle(token)}
  catch(err){unanswered=true;retry(pending,errorText(err),()=>{pending.parentElement.remove();ask(q,id,false)})}
  finally{pending.classList.remove('pending-dots');busy(false);thread.scrollTop=thread.scrollHeight;if(!unanswered)input.focus({preventScroll:true})}
@@ -60,7 +62,7 @@ async function restore(){
  }catch(err){unanswered=true;thread.replaceChildren();const body=bubble('ai','');retry(body,errorText(err),restore);status.textContent='Your saved conversation has not been cleared.'}
  finally{busy(false)}
 }
-function fresh(){document.getElementById("brief-panel").hidden=true;briefSnapshot=null;token=randomToken();chats.push({token,title:'New conversation'});unanswered=false;booking=null;bookingCard=null;thread.replaceChildren();bubble('ai',greeting);suggestions.hidden=false;options();busy(false);notice()}
+function fresh(){document.getElementById("brief-panel").hidden=true;briefSnapshot=null;token=randomToken();chats.push({token,title:pendingTitle});unanswered=false;booking=null;bookingCard=null;thread.replaceChildren();bubble('ai',greeting);suggestions.hidden=false;options();busy(false);notice()}
 try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){chats=stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string');token=chats.some(c=>c.token===stored.current)?stored.current:''}}catch{persistent=false}
 newButton.onclick=()=>{if(!asking)fresh()};
 select.onchange=()=>{if(asking)return;token=select.value;save();restore()};
@@ -82,7 +84,7 @@ function bookingFallback(parent){const p=element('p','',parent),a=element('a','O
 async function bookingRequest(body){
  const res=await request(bookingEndpoint,{method:'POST',body:JSON.stringify(body)});
  if(!res||typeof res.status!=='string')throw new Error('The booking response could not be read.');
- booking=res;const entry=chats.find(c=>c.token===token);if(entry&&entry.title==='New conversation'){entry.title='Sanifu scope call';options()}
+ booking=res;const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Sanifu scope call';options()}
  return res;
 }
 async function refreshBooking(){
