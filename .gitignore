@@ -1,0 +1,9 @@
+.DS_Store
+config.local.js
+node_modules/
+.env*
+ajent.social
+docs/design/v1/
+assets/brand/sanifu-approved.png
+assets/brand/sanifu-logo.svg
+assets/brand/sanifu-mark.svg
