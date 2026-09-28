@@ -16,7 +16,7 @@ if(!endpoint){
  document.getElementById('chat-suggestions').hidden=true;
  const fallback=document.createElement('div');fallback.className='offline-bubble';const p=document.createElement('p');p.textContent='The AI intake is not connected yet. You can still prepare a brief or book your free fit-and-scope call.';fallback.append(p);
  const choices=document.createElement('div');choices.className='offline-options';const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief yourself';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
- const call=document.createElement('a');call.href='https://cal.com/david-ndungu/discovery';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.append(fallback);
+ const call=document.createElement('a');call.href='https://cal.com/david-ndungu/sanifu-scope';call.textContent='Book a free scope call';call.target='_blank';call.rel='noopener noreferrer';choices.append(call);fallback.append(choices);thread.append(fallback);
  status.textContent='No conversation has been submitted.';return;
 }
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
@@ -36,7 +36,7 @@ function render(text){
  const fragment=document.createDocumentFragment(),pattern=/\[([^\]]+)\]\(([^)\s]+)\)/g;let offset=0,match;
  function plain(value){value.split('\n').forEach((line,i)=>{if(i)fragment.append(document.createElement('br'));fragment.append(document.createTextNode(line))})}
  while((match=pattern.exec(text))){plain(text.slice(offset,match.index));let url;try{url=new URL(match[2])}catch{}
-  if(url&&url.href==='https://cal.com/david-ndungu/discovery'){const button=document.createElement('button');button.type='button';button.className='retry';button.dataset.bookCall='';button.textContent=match[1];button.onclick=openBooking;fragment.append(button)}else if(url&&url.protocol==='https:'&&(['sanifu.run','www.sanifu.run','cal.com','ajent.social','github.com','kazi.sire.run','sire.run'].includes(url.hostname)||url.href==='https://ndungu.dev/about/')){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
+  if(url&&url.href==='https://cal.com/david-ndungu/sanifu-scope'){const button=document.createElement('button');button.type='button';button.className='retry';button.dataset.bookCall='';button.textContent=match[1];button.onclick=openBooking;fragment.append(button)}else if(url&&url.protocol==='https:'&&(['sanifu.run','www.sanifu.run','cal.com','ajent.social','github.com','kazi.sire.run','sire.run'].includes(url.hostname)||url.href==='https://ndungu.dev/about/')){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
  }plain(text.slice(offset));return fragment;
 }
 function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;row.setAttribute('aria-label',role==='ai'?'Sanifu':'You');const body=document.createElement('div');body.className='bubble';body.append(render(text));row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
@@ -78,11 +78,11 @@ function card(title){
  return bookingCard;
 }
 function when(start,zone){return new Intl.DateTimeFormat(undefined,{dateStyle:'full',timeStyle:'short',timeZone:zone}).format(new Date(start))+' · '+zone}
-function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href='https://cal.com/david-ndungu/discovery';a.target='_blank';a.rel='noopener noreferrer'}
+function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href='https://cal.com/david-ndungu/sanifu-scope';a.target='_blank';a.rel='noopener noreferrer'}
 async function bookingRequest(body){
  const res=await request(bookingEndpoint,{method:'POST',body:JSON.stringify(body)});
  if(!res||typeof res.status!=='string')throw new Error('The booking response could not be read.');
- booking=res;const entry=chats.find(c=>c.token===token);if(entry&&entry.title==='New conversation'){entry.title='Discovery call';options()}
+ booking=res;const entry=chats.find(c=>c.token===token);if(entry&&entry.title==='New conversation'){entry.title='Sanifu scope call';options()}
  return res;
 }
 async function refreshBooking(){
@@ -91,7 +91,7 @@ async function refreshBooking(){
  catch(err){status.textContent=errorText(err)}finally{busy(false)}
 }
 function showBooking(b){
- const titles={draft:'Review your discovery call',confirmed:'Your call is booked',pending:'Booking requested',failed:'That booking was not completed',unknown:'Check your booking status',submitting:'Checking your booking'};
+ const titles={draft:'Review your scope call',confirmed:'Your call is booked',pending:'Booking requested',failed:'That booking was not completed',unknown:'Check your booking status',submitting:'Checking your booking'};
  const c=card(titles[b.status]||'Check your booking status');
  element('p',when(b.start,b.timeZone)+' · '+b.duration+' minutes',c);
  element('p',b.name+' · '+b.email,c);
@@ -123,7 +123,7 @@ function localDate(zone,date=new Date()){return new Intl.DateTimeFormat('en-CA',
 function field(parent,label,type,value=''){const wrap=element('label',label,parent),input=element('input','',wrap);input.type=type;input.value=value;input.required=true;return input}
 async function openBooking(){if(asking||unanswered)return;setOpen(true);if(booking)showBooking(booking);else chooseTime()}
 function chooseTime(previous=null){
- const c=card('Book a discovery call');element('p','Choose a time to talk with David. Times are shown in your selected time zone.',c);
+ const c=card('Book a free Sanifu scope call');element('p','Choose a time to talk with David. Times are shown in your selected time zone.',c);
  const zoneLabel=element('label','Time zone',c),zone=element('select','',zoneLabel);
  let zoneName=previous?.timeZone||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
  const zones=Array.from(new Set([zoneName,'UTC',...(Intl.supportedValuesOf?Intl.supportedValuesOf('timeZone'):['America/Los_Angeles','America/New_York','Europe/London','Africa/Nairobi','Asia/Tokyo'])]));
