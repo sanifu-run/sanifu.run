@@ -146,7 +146,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   --offer-leading: 1.65;
   --offer-target: 2.75rem;
 }
-.stage { max-width: var(--offer-width); margin-inline: auto; gap: var(--space-6); padding-top: var(--space-7); padding-bottom: var(--space-6); }
+.stage { margin-inline: auto; gap: var(--space-6); padding-top: var(--space-7); padding-bottom: var(--space-6); }
 .offer-intro { flex: 1; min-width: 0; padding-block: var(--space-5); }
 .offer-intro h1 { margin: var(--space-4) 0; font-size: var(--offer-title); line-height: 1.02; letter-spacing: -.055em; font-weight: 600; text-wrap: balance; }
 .eyebrow { margin: 0; font-size: var(--offer-label); font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
@@ -160,7 +160,6 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .offer-secondary:hover { color: var(--focus); }
 .offer-note { margin-top: var(--space-4); font-size: var(--offer-label); color: var(--muted-white); }
 .conversation-column { flex: 1; max-width: var(--chat-width); }
-.conversation-label { margin: 0; font-size: var(--offer-small); font-weight: 500; text-align: center; }
 body::before { content: ""; position: fixed; z-index: 1; inset: 0; background: var(--offer-shade); pointer-events: none; }
 .workshop-details { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); padding: var(--space-7) max(var(--page-gutter), calc((100% - var(--offer-width)) / 2 + var(--page-gutter))); background: var(--offer-surface); border-top: var(--offer-rule); scroll-margin-top: var(--space-4); }
 .workshop-details h2 { margin: var(--space-4) 0; font-size: var(--offer-section-title); font-weight: 500; line-height: 1.1; letter-spacing: -.045em; }
