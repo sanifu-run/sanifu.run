@@ -30,7 +30,7 @@ if(!endpoint){
   ['What is your email and phone number?','Email david@ndungu.dev or call +1 (415) 234-7604. The phone line reaches Sanifu’s AI assistant, which can explain the workshops and point you to the free scope-call page. It cannot book the call for you by phone yet.']
  ]);
  suggestions.hidden=false;suggestions.setAttribute('aria-label','Prepared answers while the AI is offline');suggestions.querySelector('p').textContent='Quick answers';
- suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.textContent.trim())});
+ suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.dataset.prompt||button.textContent.trim())});
  const welcome=bubble('ai','Want to build software or work through an ML idea? I can help you choose a first step.');
  const choices=document.createElement('div');choices.className='offline-options';
  const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';choices.append(manual);
@@ -46,7 +46,7 @@ if(!endpoint){
   status.textContent=quickAnswers.has(question)?'Prepared answer · not AI-generated':'AI offline · your message was not sent';
   thread.scrollTop=thread.scrollHeight;
  }
- suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&!button.hidden)preparedReply(button.textContent.trim())});
+ suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&!button.hidden)preparedReply(button.dataset.prompt||button.textContent.trim())});
  form.addEventListener('submit',event=>{event.preventDefault();const question=input.value.trim();if(!question)return;preparedReply(question);input.value='';input.style.height='';input.focus({preventScroll:true})});
  input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();form.requestSubmit()}});
  form.hidden=false;status.textContent='Prepared answers · AI offline';thread.scrollTop=thread.scrollHeight;return;
@@ -56,7 +56,7 @@ const pendingTitle='Start a conversation';
 function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.toLowerCase().replace(/^[\s.!?…"']+|[\s.!?…"']+$/g,''))}
 const greeting='Hi! I can help you explore a software or ML workshop. What’s your name and email so David can follow up with you? Sanifu will never sell your information or spam you. Sharing is optional — you can skip this and ask a question.';
 const suggestions=document.getElementById('chat-suggestions');
-suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.textContent;input.focus()}});
+suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.dataset.prompt||e.target.textContent;input.focus()}});
 let briefSnapshot=null;
 let asking=false,unanswered=false,persistent=true,chats=[],token='',booking=null,bookingCard=null;
 const titlePending=new Map();
