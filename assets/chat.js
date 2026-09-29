@@ -33,7 +33,7 @@ if(!endpoint){
  suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.textContent.trim())});
  const welcome=bubble('ai','Want to build software or work through an ML idea? I can help you choose a first step.');
  const choices=document.createElement('div');choices.className='offline-options';
- const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';manual.onclick=()=>{document.getElementById('manual').open=true};choices.append(manual);
+ const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';choices.append(manual);
  const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';
  const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['Build an app','I have an app idea. Where do I start?'],['Explore ML','Can you help me build and train an ML model?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}
  const phone=document.createElement('a');phone.href='tel:+14152347604';phone.textContent='Call AI: +1 (415) 234-7604';
@@ -80,7 +80,7 @@ function errorText(err){return err.name==='AbortError'?'The request took too lon
 function setTitle(forToken,value){if(typeof value!=='string'||isPendingTitle(value))return;const entry=chats.find(c=>c.token===forToken);if(entry){entry.title=value.trim().slice(0,80);options()}}
 function generateTitle(forToken){if(titlePending.has(forToken))return titlePending.get(forToken);const run=(async()=>{try{let data;try{data=await request(titleURL,{method:'POST',body:'{}'},forToken)}catch(err){if(err.status!==409)throw err;const current=await request(conversationURL,{},forToken);data=current.title&&!isPendingTitle(current.title)?current:await request(titleURL,{method:'POST',body:'{}'},forToken)}setTitle(forToken,data.title)}catch{/* Keep a neutral local label when title generation is unavailable. */}finally{titlePending.delete(forToken)}})();titlePending.set(forToken,run);return run}
 async function ask(q,id=crypto.randomUUID(),addUser=true){
- if(asking)return;busy(true);suggestions.hidden=true;input.value='';input.style.height='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
+ if(asking)return;busy(true);suggestions.hidden=false;input.value='';input.style.height='';if(addUser)bubble('user',q);const pending=bubble('ai','···');pending.classList.add('pending-dots');
  const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Sanifu conversation';options()}
  try{const data=await request(endpoint,{method:'POST',body:JSON.stringify({message:q,requestId:id})});if(typeof data.answer!=='string'||!data.answer.trim())throw new Error('The assistant returned an empty answer.');pending.querySelector('.message-content').replaceChildren(render(data.answer));unanswered=false;briefSnapshot=null;document.getElementById("brief-approve").disabled=true;document.getElementById("brief-status").textContent="Conversation updated. Review your brief again before approving.";notice();generateTitle(token)}
  catch(err){unanswered=true;retry(pending,errorText(err),()=>{pending.parentElement.remove();ask(q,id,false)})}
@@ -88,7 +88,7 @@ async function ask(q,id=crypto.randomUUID(),addUser=true){
 }
 async function restore(){
  if(asking)return;unanswered=false;busy(true);status.textContent='Loading saved conversation…';
- try{const data=await request(conversationURL);if(!Array.isArray(data.turns))throw new Error('The saved conversation could not be read.');thread.replaceChildren();suggestions.hidden=data.turns.length>0;if(!data.turns.length)bubble('ai',greeting);
+ try{const data=await request(conversationURL);if(!Array.isArray(data.turns))throw new Error('The saved conversation could not be read.');thread.replaceChildren();suggestions.hidden=false;if(!data.turns.length)bubble('ai',greeting);
  for(const turn of data.turns){bubble('user',turn.question);if(turn.completedAt)bubble('ai',turn.answer);else{unanswered=true;const pending=bubble('ai','');retry(pending,'This message is saved but has no completed reply yet.',()=>{pending.parentElement.remove();ask(turn.question,turn.id,false)})}}
  showBrief(data);if(data.title&&!isPendingTitle(data.title))setTitle(token,data.title);else if(data.turns.some(turn=>turn.completedAt))generateTitle(token);booking=data.booking||null;bookingCard=null;if(booking)showBooking(booking);notice();
  }catch(err){unanswered=true;thread.replaceChildren();const body=bubble('ai','');retry(body,errorText(err),restore);status.textContent='Your saved conversation has not been cleared.'}
@@ -96,7 +96,7 @@ async function restore(){
 }
 function fresh(){document.getElementById("brief-panel").hidden=true;briefSnapshot=null;token=randomToken();chats.push({token,title:pendingTitle});unanswered=false;booking=null;bookingCard=null;thread.replaceChildren();bubble('ai',greeting);suggestions.hidden=false;options();busy(false);notice()}
 try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){chats=stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string');token=chats.some(c=>c.token===stored.current)?stored.current:''}}catch{persistent=false}
-newButton.onclick=()=>{if(!asking)fresh()};
+newButton.onclick=()=>{if(!asking){fresh();input.focus()}};
 select.onchange=()=>{if(asking)return;token=select.value;save();restore()};
 deleteButton.onclick=async()=>{if(asking||!confirm('Delete this conversation from saved chats and the AWS transcript archive? Emailed and AI provider copies remain. This does not cancel a Cal.com booking.'))return;busy(true);try{await request(conversationURL,{method:'DELETE'});chats=chats.filter(c=>c.token!==token);save(token);fresh();status.textContent='Conversation deleted. Start a new chat when you’re ready.'}catch(err){status.textContent=errorText(err)}finally{busy(false)}};
 form.addEventListener('submit',e=>{e.preventDefault();if(bookingCard&&bookingCard.contains(e.submitter||document.activeElement))return;const q=input.value.trim();if(!unanswered&&q&&Array.from(q).length<=1000)ask(q)});
@@ -155,7 +155,7 @@ async function confirmBooking(b){
 }
 function localDate(zone,date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(date)}
 function field(parent,label,type,value=''){const wrap=element('label',label,parent),input=element('input','',wrap);input.type=type;input.value=value;input.required=true;return input}
-async function openBooking(){if(asking||unanswered)return;setOpen(true);if(booking)showBooking(booking);else chooseTime()}
+async function openBooking(){if(asking||unanswered)return;setOpen(true);thread.scrollIntoView({block:'center'});if(booking)showBooking(booking);else chooseTime()}
 function chooseTime(previous=null){
  const c=card('Book a free Sanifu scope call');element('p','Choose a time to talk with David. Times are shown in your selected time zone.',c);
  const zoneLabel=element('label','Time zone',c),zone=element('select','',zoneLabel);

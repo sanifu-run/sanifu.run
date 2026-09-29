@@ -51,63 +51,22 @@
               <button id="voiceBtn" type="button" hidden>Dictate</button>
               <button type="submit" aria-label="Send message"><img src="assets/arrow-up.svg" width="20" height="20" alt=""></button>
             </form>
+            <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested messages">
+              <p>Try a question</p>
+              <ul class="prompt-list">
+              <li><button type="button">I have an app idea. Where do I start?</button></li>
+              <li><button type="button">How do I check that an AI-built app works?</button></li>
+              <li><button type="button">What could I automate in my work?</button></li>
+              <li><button type="button">How can I build software without knowing how to code?</button></li>
+              <li><button type="button">Can you help me build and train an ML model?</button></li>
+              <li><button type="button">What does a workshop cost?</button></li>
+              <li><button type="button">Who is David?</button></li>
+              <li><button type="button">What is your email and phone number?</button></li>
+              <li><button type="button">What is your business address?</button></li>
+              </ul>
+            </div>
             <p id="chat-status" role="status"></p>
-            <details class="conversation-tools">
-              <summary>More options</summary>
-              <p class="chat-offer">Private four-hour software and ML workshops: you build a small project with David’s guidance. The first five paid pilot workshops are $300 each, subject to scope and availability, with preparation included. David designs your agenda after a free 20–30 minute call; deployment depends on scope.</p>
-            <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested messages; scroll sideways for more">
-              <p>Try asking (scroll for more)</p>
-              <button type="button">I have an app idea. Where do I start?</button>
-              <button type="button">How do I check that an AI-built app works?</button>
-              <button type="button">What could I automate in my work?</button>
-              <button type="button">How can I build software without knowing how to code?</button>
-              <button type="button">Can you help me build and train an ML model?</button>
-              <button type="button">What does a workshop cost?</button>
-              <button type="button">Who is David?</button>
-              <button type="button">What is your email and phone number?</button>
-              <button type="button">What is your business address?</button>
-            </div>
 
-            <p class="chat-disclosure">AI can make mistakes. Chats are saved and emailed to David. Please don’t share secrets or private client information.</p>
-            <details id="chat-history-wrap" class="history-menu">
-              <summary>Saved conversations</summary>
-              <div class="chat-controls">
-                <label class="sr-only" for="chat-history">Saved conversations</label>
-                <select id="chat-history"></select>
-                <button id="chat-new" type="button">New chat</button>
-                <button id="chat-delete" type="button">Delete</button>
-              </div>
-            </details>
-            <div class="chat-actions">
-              <button id="brief-generate" type="button">Review my brief</button>
-              <button type="button" data-book-call>Book a free call</button>
-            </div>
-            <section id="brief-panel" hidden>
-              <h2>Your learner brief</h2>
-              <p>Correct anything that doesn’t sound like you. David designs the workshop after your call.</p>
-              <label class="sr-only" for="brief-text">Edit your learner brief</label>
-              <textarea id="brief-text" rows="9" maxlength="12000"></textarea>
-              <div class="chat-actions">
-                <button id="brief-save" type="button">Save changes</button>
-                <button id="brief-approve" type="button">This accurately describes my needs</button>
-                <button id="brief-download" type="button">Download</button>
-              </div>
-              <p id="brief-status" role="status"></p>
-            </section>
-            <p class="chat-footnote">Brief approval confirms accuracy, not a purchase. David designs your agenda after a free call.</p>
-        <details id="manual" class="manual-fallback">
-          <summary>Prefer to write a brief yourself?</summary>
-          <p>This form stays in your browser. Download the brief and bring it to your free call.</p>
-          <form id="manual-form" hidden>
-            <label>Your project or area of interest<textarea name="Project" rows="2" required></textarea></label>
-            <label>Your experience and what you’ve tried<textarea name="Experience" rows="2"></textarea></label>
-            <label>What you’d like to do independently afterward<textarea name="Learning goal" rows="2"></textarea></label>
-            <label>Practical constraints or questions for David<textarea name="Questions" rows="2"></textarea></label>
-            <button type="submit">Download my brief</button>
-          </form>
-          <p id="manual-status" role="status"></p>
-        </details>
-            </details>
           </section>
         </div>
       </div>
@@ -127,6 +86,52 @@
           <div><h3>Have a paying client?</h3><p>Earn while you learn on their project. You own the client relationship and keep your consulting fees; you pay Sanifu for the workshop. A paying client is optional, and earnings depend on the work you win and deliver.</p></div>
           <div><h3>Your first workshop: $300</h3><p>The first five pilot clients receive one-to-one workshops with preparation included. Follow-up includes one batch of questions within seven days, up to 30 minutes of David’s time.</p><p>Workshop membership includes ongoing community access for new tools, techniques, and shared progress. Community onboarding details are confirmed with your workshop.</p></div>
         </div>
+        <section class="conversation-tools" aria-labelledby="prepare-title">
+          <div class="prepare-intro"><p class="eyebrow">Before your workshop</p><h2 id="prepare-title">Prepare for your free call.</h2>
+          <p>Tell David what you want to build and where you need help. Your brief starts the conversation; it is not a purchase or a commitment.</p></div>
+
+
+            <p class="chat-disclosure">Use the chat to explore your idea, then prepare a brief for your free call. AI can make mistakes. Chats are saved and emailed to David; please leave out secrets and private client information.</p>
+            <section id="chat-history-wrap" class="history-menu" aria-labelledby="saved-chats-title">
+              <h3 id="saved-chats-title">Continue a conversation</h3>
+              <p>Return to a saved chat, or start a new one for another idea.</p>
+              <div class="chat-controls">
+                <label class="sr-only" for="chat-history">Saved conversations</label>
+                <select id="chat-history"></select>
+                <button id="chat-new" type="button">New chat</button>
+                <button id="chat-delete" type="button">Delete</button>
+              </div>
+            </section>
+            <div class="chat-actions">
+              <button id="brief-generate" type="button">Review my brief</button>
+              <button type="button" data-book-call>Book a free call</button>
+            </div>
+            <section id="brief-panel" hidden>
+              <h3>Your project brief</h3>
+              <p>Review what the chat captured, make corrections, and approve the summary when it reflects your needs. David designs your agenda after the free call.</p>
+              <label class="sr-only" for="brief-text">Edit your learner brief</label>
+              <textarea id="brief-text" rows="9" maxlength="12000"></textarea>
+              <div class="chat-actions">
+                <button id="brief-save" type="button">Save changes</button>
+                <button id="brief-approve" type="button">This accurately describes my needs</button>
+                <button id="brief-download" type="button">Download</button>
+              </div>
+              <p id="brief-status" role="status"></p>
+            </section>
+            <p class="chat-footnote">Brief approval confirms accuracy, not a purchase. David designs your agenda after a free call.</p>
+        <section id="manual" class="manual-fallback" aria-labelledby="manual-title">
+          <h3 id="manual-title">Write your own project brief</h3>
+          <p>Prefer to start with your own notes? Fill in what you know, download your brief, and bring it to your free call. This form stays in your browser.</p>
+          <form id="manual-form" hidden>
+            <label>Your project or area of interest<textarea name="Project" rows="2" required></textarea></label>
+            <label>Your experience and what you’ve tried<textarea name="Experience" rows="2"></textarea></label>
+            <label>What you’d like to do independently afterward<textarea name="Learning goal" rows="2"></textarea></label>
+            <label>Practical constraints or questions for David<textarea name="Questions" rows="2"></textarea></label>
+            <button type="submit">Download my brief</button>
+          </form>
+          <p id="manual-status" role="status"></p>
+        </section>
+        </section>
         <a class="offer-primary" href="https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&amp;utm_medium=website&amp;utm_campaign=sanifu_pilot" target="_blank" rel="noopener noreferrer">Let’s scope your project <span aria-hidden="true">↗</span></a>
       </section>
     </main>
@@ -135,6 +140,6 @@
   <script src="config.js?v=20260928-aws"></script>
   <script src="config.local.js" onerror="void 0"></script>
   <script src="site.js"></script>
-  <script src="assets/chat.js?v=20260928-contact"></script>
+  <script src="assets/chat.js?v=20260929-visible-tools"></script>
 </body>
 </html>
