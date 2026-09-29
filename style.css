@@ -129,3 +129,57 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 @media (max-height: 600px) { :root { --stream-fade: 24px; } }
+
+/* Workshop offer: extend the existing crimson identity around the conversation. */
+:root {
+  --offer-width: 82rem;
+  --offer-title: clamp(2.75rem, 5.3vw, 5.5rem);
+  --offer-section-title: clamp(2.25rem, 4vw, 3.75rem);
+  --offer-body: 1.125rem;
+  --offer-small: .875rem;
+  --offer-label: .75rem;
+  --offer-rule: 1px solid var(--glass-line);
+  --offer-surface: rgb(52 0 12 / .94);
+  --offer-shade: rgb(52 0 12 / .62);
+  --space-6: 3rem;
+  --space-7: 5rem;
+  --offer-leading: 1.65;
+  --offer-target: 2.75rem;
+}
+.stage { max-width: var(--offer-width); margin-inline: auto; gap: var(--space-6); padding-top: var(--space-7); padding-bottom: var(--space-6); }
+.offer-intro { flex: 1; min-width: 0; padding-block: var(--space-5); }
+.offer-intro h1 { margin: var(--space-4) 0; font-size: var(--offer-title); line-height: 1.02; letter-spacing: -.055em; font-weight: 600; text-wrap: balance; }
+.eyebrow { margin: 0; font-size: var(--offer-label); font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+.offer-lede { max-width: 36ch; margin-block: var(--space-5) var(--space-3); font-size: var(--offer-body); line-height: var(--offer-leading); text-wrap: pretty; }
+.offer-founder { max-width: 42ch; font-size: var(--offer-small); line-height: var(--offer-leading); color: var(--muted-white); }
+.offer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin-top: var(--space-5); }
+.offer-primary, .offer-secondary { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--offer-target); font-size: var(--offer-small); font-weight: 600; }
+.offer-primary { padding: var(--space-3) var(--space-4); border-radius: var(--radius-small); background: var(--white); color: var(--crimson-deep); text-decoration: none; }
+.offer-primary:hover { background: var(--focus); }
+.offer-secondary { text-underline-offset: .3em; }
+.offer-secondary:hover { color: var(--focus); }
+.offer-note { margin-top: var(--space-4); font-size: var(--offer-label); color: var(--muted-white); }
+.conversation-column { flex: 1; max-width: var(--chat-width); }
+.conversation-label { margin: 0; font-size: var(--offer-small); font-weight: 500; text-align: center; }
+body::before { content: ""; position: fixed; z-index: 1; inset: 0; background: var(--offer-shade); pointer-events: none; }
+.workshop-details { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); padding: var(--space-7) max(var(--page-gutter), calc((100% - var(--offer-width)) / 2 + var(--page-gutter))); background: var(--offer-surface); border-top: var(--offer-rule); scroll-margin-top: var(--space-4); }
+.workshop-details h2 { margin: var(--space-4) 0; font-size: var(--offer-section-title); font-weight: 500; line-height: 1.1; letter-spacing: -.045em; }
+.workshop-details h3 { margin: 0 0 var(--space-2); font-size: var(--offer-body); font-weight: 600; }
+.workshop-details p:not(.eyebrow) { max-width: 52ch; font-size: var(--offer-small); line-height: var(--offer-leading); color: var(--muted-white); }
+.workshop-steps { margin: 0; padding-left: var(--space-4); display: grid; gap: var(--space-4); }
+.workshop-steps li { padding-left: var(--space-2); }
+.workshop-steps li::marker { color: var(--muted-white); }
+.workshop-steps p { margin: 0; }
+.workshop-bottom { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); padding-top: var(--space-6); border-top: var(--offer-rule); }
+.workshop-details > .offer-primary { justify-self: start; }
+@media (max-width: 800px) {
+  .stage { flex-direction: column; align-items: stretch; gap: var(--space-5); }
+  .offer-intro { padding-top: var(--space-4); }
+  .offer-intro h1 { font-size: clamp(2.75rem, 9vw, 4.75rem); }
+  .offer-lede, .offer-founder { max-width: 48ch; }
+  .conversation-column { width: 100%; align-self: center; }
+  .workshop-details, .workshop-bottom { grid-template-columns: 1fr; }
+  .workshop-details { padding-block: var(--space-6); }
+}
+
+.site-shell { z-index: 2; }
