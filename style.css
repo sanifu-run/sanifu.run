@@ -202,3 +202,34 @@ body::before { content: ""; position: fixed; z-index: 1; inset: 0; background: v
 #manual-form label { margin: 0; }
 #manual-form button { justify-self: start; }
 @media (max-width: 800px) { .conversation-tools, #manual-form { grid-template-columns: 1fr; } }
+
+/* Workshop value and founder projects use the existing Sanifu palette and scale. */
+.portfolio-jump { display: inline-block; padding-block: var(--space-2); font-size: var(--offer-small); text-underline-offset: .25em; }
+.workshop-value, .founder-portfolio, .workshop-faq { grid-column: 1 / -1; padding-top: var(--space-6); border-top: var(--offer-rule); }
+.workshop-value, .founder-portfolio { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-6); }
+.practice-list { margin: 0; }
+.practice-list > div { padding-block: var(--space-4); border-bottom: var(--offer-rule); }
+.practice-list > div:first-child { padding-top: 0; }
+.practice-list dt { font-size: var(--offer-body); font-weight: 600; }
+.practice-list dd { margin: var(--space-2) 0 0; max-width: 52ch; font-size: var(--offer-small); line-height: var(--offer-leading); color: var(--muted-white); }
+.value-takeaway, .portfolio-context, .amos-direction { grid-column: 1 / -1; }
+.workshop-details .value-takeaway p { max-width: 72ch; }
+.founder-portfolio { scroll-margin-top: var(--space-4); }
+.portfolio-intro > a { display: inline-block; padding-block: var(--space-2); font-size: var(--offer-small); text-underline-offset: .25em; }
+.project-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5) var(--space-4); }
+.project-list > li { min-width: 0; padding-top: var(--space-3); border-top: var(--offer-rule); }
+.project-list h3 a { display: inline-block; padding-block: var(--space-1); text-underline-offset: .25em; }
+.project-list p { margin: var(--space-2) 0 0; }
+.portfolio-context { margin-bottom: 0; }
+.amos-direction { padding: var(--space-4); border-left: 3px solid var(--crimson-bright); background: var(--glass); }
+.workshop-details .amos-direction p { max-width: 72ch; margin-bottom: 0; }
+.workshop-faq h2 { margin-top: 0; }
+.workshop-faq details { border-bottom: var(--offer-rule); padding-block: var(--space-3); }
+.workshop-faq summary { cursor: pointer; padding-block: var(--space-2); font-size: var(--offer-body); font-weight: 600; line-height: 1.5; }
+.workshop-details .workshop-faq details p { max-width: 72ch; }
+.workshop-faq > .offer-primary { margin-top: var(--space-5); }
+@media (max-width: 800px) {
+  .workshop-value, .founder-portfolio { grid-template-columns: 1fr; }
+  .project-list { gap: var(--space-4); }
+}
+@media (max-width: 420px) { .project-list { grid-template-columns: 1fr; } }
