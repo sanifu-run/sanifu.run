@@ -6,6 +6,7 @@ const input=document.getElementById('q'),thread=document.getElementById('thread'
 const status=document.getElementById('chat-status'),select=document.getElementById('chat-history'),newButton=document.getElementById('chat-new'),deleteButton=document.getElementById('chat-delete');
 const endpoint=window.SANIFU_CONFIG?.chatEndpoint||'';
 const siteBookingUrl='https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&utm_medium=website&utm_campaign=sanifu_pilot';
+const nameIntroduction='My name means proper, standard, and artful in Swahili, and it was chosen because those are the values David embodies in his engineering practice and wants to share with the world.';
 if(!endpoint){
  const panel=document.getElementById('chat-panel'),launch=document.getElementById('chat-launcher');
  panel.classList.add('unavailable');
@@ -34,7 +35,7 @@ if(!endpoint){
  ]);
  suggestions.hidden=false;suggestions.setAttribute('aria-label','Prepared answers while the AI is offline');suggestions.querySelector('p').textContent='Quick answers';
  suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.dataset.prompt||button.textContent.trim())});
- const welcome=bubble('ai','Want to build software or work through an ML idea? I can help you choose a first step.');
+ const welcome=bubble('ai',nameIntroduction+'\n\nWant to build software or work through an ML idea? I can help you choose a first step.');
  const choices=document.createElement('div');choices.className='offline-options';
  const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';choices.append(manual);
  const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';
@@ -58,7 +59,7 @@ if(!endpoint){
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
 function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.toLowerCase().replace(/^[\s.!?…"']+|[\s.!?…"']+$/g,''))}
-const greeting='Hi! I can help you explore a software or ML workshop. What’s your name and email so David can follow up with you? Sanifu will never sell your information or spam you. Sharing is optional — you can skip this and ask a question.';
+const greeting='Hi! I’m Sanifu. '+nameIntroduction+'\n\nI can help you explore a software or ML workshop. What’s your name and email so David can follow up with you? Sanifu will never sell your information or spam you. Sharing is optional — you can skip this and ask a question.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.dataset.prompt||e.target.textContent;input.focus()}});
 let briefSnapshot=null;

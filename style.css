@@ -214,6 +214,7 @@ body::before { content: ""; position: fixed; z-index: 1; inset: 0; background: v
 .practice-list dd { margin: var(--space-2) 0 0; max-width: 52ch; font-size: var(--offer-small); line-height: var(--offer-leading); color: var(--muted-white); }
 .value-takeaway, .portfolio-context, .amos-direction { grid-column: 1 / -1; }
 .workshop-details .value-takeaway p { max-width: 72ch; }
+.name-story { grid-column: 1 / -1; padding-top: var(--space-4); border-top: var(--offer-rule); }
 .founder-portfolio { scroll-margin-top: var(--space-4); }
 .portfolio-intro > a { display: inline-block; padding-block: var(--space-2); font-size: var(--offer-small); text-underline-offset: .25em; }
 .project-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5) var(--space-4); }
