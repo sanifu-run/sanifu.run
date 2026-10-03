@@ -1,5 +1,5 @@
 // Keep a complete static story available if any interactive module fails.
-import('./app.js').catch(()=>{
+import('./app.js?v=cloned-20261003').catch(()=>{
  document.body.classList.remove('graph-expanded');
  const panel=document.getElementById('map-panel');panel.removeAttribute('role');panel.removeAttribute('aria-modal');
  document.querySelectorAll('[inert]').forEach(element=>element.inert=false);

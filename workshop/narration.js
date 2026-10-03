@@ -11,14 +11,14 @@ export function createNarration() {
  const status=document.getElementById('narration-status');
  const transcript=document.getElementById('narration-transcript');
  let selection='',generation=0;
- function sync(){play.textContent=audio.paused?(audio.currentTime>0&&!audio.ended?'Resume narration':'Play narration'):'Pause narration';play.setAttribute('aria-label',play.textContent);miniPlay.textContent=play.textContent;}
+ function sync(){const label=audio.paused?(audio.currentTime>0&&!audio.ended?'Resume narration':'Play narration'):'Pause narration';for(const button of [play,miniPlay]){button.dataset.state=audio.paused?'paused':'playing';button.setAttribute('aria-label',label);button.title=label;}}
  async function start(){const current=generation;try{await audio.play();if(current===generation){status.textContent='Playing';sync();}}catch(error){if(current===generation&&error.name!=='AbortError'){status.textContent='Press Play to start narration. If audio cannot load, the transcript is below.';sync();}}}
  function select(kind,id,label,{autoplay=false}={}) {
   const key=`${kind}:${id}`;
   if(!scripts[kind]?.[id])return;
   if(selection===key){if(autoplay&&toggle.checked){if(audio.paused)void start();}else if(!autoplay){audio.pause();status.textContent='Paused';sync();}return;}
   generation++;audio.pause();audio.currentTime=0;
-  selection=key;audio.src=`audio/${kind}-${id}.mp3`;audio.load();
+  selection=key;audio.src=`audio/${kind}-${id}.mp3?v=cloned-20261003`;audio.load();
   title.textContent=label;document.getElementById('simulation-narration-title').textContent=label;transcript.textContent=scripts[kind][id];status.textContent='Ready';sync();
   if(autoplay&&toggle.checked)void start();
  }

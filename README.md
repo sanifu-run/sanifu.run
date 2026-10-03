@@ -35,12 +35,14 @@ The GitHub repository is `sanifu-run/sanifu.run`. Publish from `main` at the rep
 
 The workshop graph includes short synthetic narration for every chapter, deeper
 concept, and illustrative improvement step. Selecting an idea starts its clip;
-use Pause/Resume, Replay, or the speed selector. Turn off “Narrate on selection”
-for manual playback. Loading the page starts silently. A readable transcript is
+use the play/pause and replay icons, or the speed selector. Turn off
+“Narrate on selection” for manual playback. Loading the page starts silently. A readable transcript is
 available alongside the player, including when audio is unavailable.
 
 Spoken copy is in `workshop/narration-scripts.js`; the corresponding mono MP3s
 are in `workshop/audio/`. These are static assets with no TTS API or browser
-speech dependency. The current voice is macOS Samantha, rendered with Narrate's
-native backend and normalized to -16 LUFS. When changing a script, regenerate
-its matching clip and verify script IDs against `workshop/content.js`.
+speech dependency. The synthetic voice is cloned from David’s supplied reference,
+rendered with Narrate’s Pocket TTS backend on his DGX through Spark. The reference
+stays private; only the finished narration clips are served by the site. When
+changing a script, regenerate its matching clip and verify script IDs against
+`workshop/content.js`.

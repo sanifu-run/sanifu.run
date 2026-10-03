@@ -1,6 +1,6 @@
 import {nodes,edges,stations,chapters,sources,simulation,observed} from './content.js';
 import {createScene} from './scene.js';
-import {createNarration} from './narration.js';
+import {createNarration} from './narration.js?v=cloned-20261003';
 const narration=createNarration();
 const $=id=>document.getElementById(id), byId=new Map(nodes.map(n=>[n.id,n]));
 const preferFlat=()=>matchMedia('(max-width:760px), (prefers-reduced-motion:reduce)').matches;
