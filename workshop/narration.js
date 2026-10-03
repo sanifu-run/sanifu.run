@@ -29,7 +29,7 @@ export function createNarration() {
  audio.addEventListener('play',sync);audio.addEventListener('pause',sync);
  audio.addEventListener('ended',()=>{status.textContent='Finished';sync();});
  audio.addEventListener('error',()=>{status.textContent='Audio could not load. Read the transcript below or press Replay to retry.';sync();});
- document.getElementById('narration-speed').addEventListener('change',event=>{audio.playbackRate=Number(event.target.value);});
+ document.getElementById('narration-speed').addEventListener('change',event=>{const rate=Number(event.target.value);audio.defaultPlaybackRate=rate;audio.playbackRate=rate;});
  window.addEventListener('pagehide',()=>{generation++;audio.pause();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&!audio.paused){audio.pause();status.textContent='Paused';sync();}});
  return {select};
