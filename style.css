@@ -234,3 +234,10 @@ body::before { content: ""; position: fixed; z-index: 1; inset: 0; background: v
   .project-list { gap: var(--space-4); }
 }
 @media (max-width: 420px) { .project-list { grid-template-columns: 1fr; } }
+
+/* Direct access to the repository Atlas from the landing page. */
+.site-header { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.site-nav { flex-shrink: 0; }
+.site-nav a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; border: 1px solid rgba(255,245,236,.32); border-radius: 999px; color: var(--white); font-size: 14px; font-weight: 650; text-decoration: none; transition: background .15s ease, border-color .15s ease; }
+.site-nav a:hover { background: rgba(255,245,236,.1); border-color: rgba(255,245,236,.65); }
+.site-nav a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
