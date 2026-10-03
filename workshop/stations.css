@@ -1,0 +1,205 @@
+/* The original five-station 3D interface, adapted to the future-software story. */
+.scene-camera {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+  transform-style:preserve-3d
+}
+.scene-world {
+  position:absolute;
+  width:var(--size-860);
+  height:var(--size-520);
+  margin-left:var(--size-neg-430);
+  margin-top:var(--size-neg-260);
+  transform-style:preserve-3d
+}
+.scene-floor {
+  position:absolute;
+  inset:0;
+  border:var(--size-1) solid var(--tone-13);
+  border-radius:var(--size-28);
+  background-image:linear-gradient(var(--tone-14) var(--size-1),transparent var(--size-1)),linear-gradient(90deg,var(--tone-14) var(--size-1),transparent var(--size-1));
+  background-size:var(--size-40) var(--size-40);
+  background-color:var(--tone-15);
+  box-shadow:0 0 var(--size-80) var(--tone-16),inset 0 0 var(--size-80) var(--tone-17)
+}
+.paths {
+  position:absolute;
+  inset:0;
+  width:var(--size-860);
+  height:var(--size-520);
+  transform:translateZ(var(--size-3));
+  overflow:visible;
+  pointer-events:none
+}
+.paths path {
+  fill:none;
+  stroke:var(--tone-18);
+  stroke-width:2;
+  stroke-dasharray:5 7
+}
+.paths .feedback-path {
+  stroke:var(--tone-19);
+  stroke-width:1
+}
+.station {
+  position:absolute;
+  width:var(--size-110);
+  height:var(--size-88);
+  transform-style:preserve-3d
+}
+.station-face {
+  position:absolute;
+  border:var(--size-1) solid var(--tone-20);
+  border-radius:var(--size-8);
+  background:linear-gradient(130deg,var(--tone-21),var(--tone-22));
+  pointer-events:none
+}
+.station-top {
+  width:var(--size-110);
+  height:var(--size-88);
+  transform:translateZ(var(--height));
+  box-shadow:0 0 var(--size-36) var(--tone-23),inset 0 0 var(--size-30) var(--tone-24)
+}
+.station-front {
+  top:var(--size-88);
+  width:var(--size-110);
+  height:var(--height);
+  transform-origin:top;
+  transform:rotateX(90deg);
+  border-radius:0 0 var(--size-8) var(--size-8);
+  background:linear-gradient(var(--tone-25),var(--tone-26))
+}
+.station-side {
+  left:var(--size-110);
+  width:var(--height);
+  height:var(--size-88);
+  transform-origin:left;
+  transform:rotateY(-90deg);
+  border-radius:0 var(--size-8) var(--size-8) 0;
+  background:linear-gradient(100deg,var(--tone-27),var(--tone-28))
+}
+.station.selected .station-top {
+  background:linear-gradient(130deg,var(--tone-29),var(--tone-30));
+  border-color:var(--tone-31);
+  box-shadow:0 0 var(--size-50) var(--tone-32),inset 0 0 var(--size-25) var(--tone-33)
+}
+.station.selected .station-front {
+  background:linear-gradient(var(--tone-34),var(--tone-35))
+}
+.station-label {
+  position:absolute;
+  left:var(--size-55);
+  top:var(--size-42);
+  width:var(--size-140);
+  margin-left:var(--size-neg-70);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  background:transparent;
+  padding:var(--size-4) var(--size-8);
+  white-space:nowrap;
+  line-height:1.4;
+  transform-style:preserve-3d;
+  text-shadow:0 var(--size-2) var(--size-9) var(--tone-36);
+  min-height:var(--size-55)
+}
+.station-label:hover {
+  background:var(--tone-37)
+}
+.station-label strong {
+  font-size:var(--size-21);
+  letter-spacing:-.04em
+}
+.station-label span {
+  font-size:var(--size-10);
+  color:var(--tone-38);
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+.station.selected .station-label strong {
+  color:var(--tone-39)
+}
+.station-label:focus-visible {
+  outline-offset:var(--size-1)
+}
+.scene-marker {
+  position:absolute;
+  left:var(--size-806);
+  top:var(--size-18);
+  width:var(--size-14);
+  height:var(--size-14);
+  border-radius:50%;
+  background:var(--tone-40);
+  box-shadow:0 0 var(--size-30) var(--tone-29);
+  transform:translateZ(var(--size-168))
+}
+
+.scene-flat {
+  perspective:none;
+  cursor:default
+}
+.scene-flat .scene-camera {
+  position:static;
+  width:auto;
+  height:100%;
+  transform:none!important
+}
+.scene-flat .scene-world {
+  position:static;
+  margin:0;
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:var(--size-12);
+  padding:var(--size-30);
+  align-content:center
+}
+.scene-flat .scene-floor,.scene-flat .paths,.scene-flat .station-face,.scene-flat .scene-marker {
+  display:none
+}
+.scene-flat .station {
+  position:static!important;
+  width:auto;
+  height:var(--size-90);
+  transform:none!important
+}
+.scene-flat .station-label {
+  position:static;
+  margin:0;
+  width:100%;
+  height:100%;
+  transform:none!important;
+  white-space:normal;
+  border:var(--size-1) solid var(--line);
+  background:var(--tone-68);
+  border-radius:var(--size-14)
+}
+.scene-flat .station.selected .station-label {
+  background:var(--tone-69);
+  border-color:var(--tone-70)
+}
+
+.scene-viewport{perspective:var(--graph-perspective)}
+.station-label{border:var(--size-1) solid var(--line-strong);background:var(--panel-raised);border-radius:var(--size-10);box-shadow:var(--shadow)}
+.station-label strong{font-size:var(--size-18);letter-spacing:-.025em}
+.station-label span{font-size:var(--size-9);color:var(--muted);letter-spacing:.07em}
+.station.selected .station-label{background:var(--station-selected);border-color:var(--tone-31)}
+.paths .feedback-path{stroke:var(--positive);stroke-width:var(--size-2);stroke-dasharray:8 6}
+.paths .workflow-path{stroke:var(--station-workflow);stroke-width:var(--size-2);stroke-dasharray:3 6}
+.station-node-list{display:flex;flex-wrap:wrap;gap:var(--size-6);margin-top:var(--size-16)}
+.station-node-list button{font-size:var(--size-11);min-height:var(--size-36);padding:var(--size-7) var(--size-10);border-radius:var(--size-7)}
+.station-node-list button[aria-pressed=true]{border-color:var(--tone-31);background:var(--station-selected)}
+@media(max-width:760px){
+ .scene-flat .scene-world{grid-template-columns:repeat(2,minmax(0,1fr));padding:var(--size-16);gap:var(--size-10)}
+ .scene-flat .station{height:var(--size-80)}
+ .scene-flat .station-label strong{font-size:var(--size-16)}
+ .scene-flat .station-label span{font-size:var(--size-8)}
+ .graph-expanded .scene-viewport.scene-flat{height:var(--size-320);min-height:var(--size-320)}
+ .legend{gap:var(--size-12)}
+}

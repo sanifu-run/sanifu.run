@@ -79,3 +79,12 @@ export const simulation = [
  {label:'Verify',title:'The exact candidate passes its checks.',body:'Illustrative checks cover a normal request, a repeat, missing details and unauthorized access. The candidate meets the pre-authorized change category.',result:'Qualified evidence and policy make it eligible for automatic application.'},
  {label:'Apply',title:'Apply within the rules, then watch the outcome.',body:'The permitted artifact rolls out with monitoring and a recovery plan. If checks fail or policy excludes the change, the system stops or escalates instead.',result:'Automatic improvement is a governed decision, followed by observation.'}
 ];
+
+// The familiar five-station view is the navigation layer; all concept detail remains available.
+export const stations = [
+ {id:'people',name:'People',role:'Human direction',chapter:'outcomes',groups:['human']},
+ {id:'core',name:'Headless core',role:'Shared capabilities',chapter:'headless',groups:['interface','core']},
+ {id:'agents',name:'Agents',role:'Act for people',chapter:'agents',groups:['agent','runtime']},
+ {id:'rules',name:'Human rules',role:'Bounded authority',chapter:'rules',groups:['rules']},
+ {id:'improvement',name:'Improvement',role:'Two verified loops',chapter:'workflow',groups:['workflow','evolution']}
+].map(station=>({...station,concepts:nodes.filter(node=>station.groups.includes(node.group)).map(node=>node.id)}));
