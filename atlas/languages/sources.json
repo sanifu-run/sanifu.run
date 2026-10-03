@@ -1,0 +1,42 @@
+{
+  "JavaScript": {
+    "file": "javascript.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/javascript/javascript-original.svg"
+  },
+  "TypeScript": {
+    "file": "typescript.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/typescript/typescript-original.svg"
+  },
+  "PHP": {
+    "file": "php.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/php/php-original.svg"
+  },
+  "Python": {
+    "file": "python.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/python/python-original.svg"
+  },
+  "HTML": {
+    "file": "html5.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/html5/html5-original.svg"
+  },
+  "CSS": {
+    "file": "css3.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/css3/css3-original.svg"
+  },
+  "Elixir": {
+    "file": "elixir.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/elixir/elixir-original.svg"
+  },
+  "Ruby": {
+    "file": "ruby.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/ruby/ruby-original.svg"
+  },
+  "Astro": {
+    "file": "astro.svg",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/astro/astro-original.svg"
+  },
+  "Go": {
+    "file": "gopher.svg",
+    "source": "https://go.dev/images/favicon-gopher.svg"
+  }
+}

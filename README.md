@@ -25,3 +25,8 @@ The GitHub repository is `sanifu-run/sanifu.run`. Publish from `main` at the rep
 ## Interactive workshop page
 
 `/workshop/` explains the six-step method with a rotatable, selectable process map and a booking-request teaching illustration. The homepage links to it from the offer. `?graph=full` opens the focused graph with a selected-step teaching panel; the flat view, keyboard navigation and static summary provide alternative ways to follow the process. Phones and reduced-motion viewers start with the readable flat map and can choose 3D; an explicit view choice persists in the URL. The tool map describes an illustrative workflow and evolving components, not a live service integration. No build step or additional hosted dependency is required.
+
+
+## Interactive Atlas
+
+`/atlas/` explores David's public repositories as white 3D spheres against Sanifu crimson. Search by name or owner, click linked year nodes to filter, and choose **All years** to return to the overview. Sphere sizes follow commit counts and language artwork identifies the dominant language. Browse list provides a text alternative. Shift-drag/right-drag pans, drag rotates, and scroll zooms; touch uses one finger to rotate and two to pan/zoom. Source and rebuild instructions: `tools/atlas/` and `docs/atlas-2026-10-02.md`. This is a static snapshot; the site does not make live GitHub API requests.

@@ -7,3 +7,8 @@ docs/design/v1/
 assets/brand/sanifu-approved.png
 assets/brand/sanifu-logo.svg
 assets/brand/sanifu-mark.svg
+
+# Atlas source dependencies and local QA artifacts
+tools/atlas/node_modules
+atlas-before.png
+qa-artifacts/
