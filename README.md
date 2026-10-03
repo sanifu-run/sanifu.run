@@ -30,3 +30,17 @@ The GitHub repository is `sanifu-run/sanifu.run`. Publish from `main` at the rep
 ## Interactive Atlas
 
 `/atlas/` explores David's public repositories as white 3D spheres against Sanifu crimson. Search by name or owner, click linked year nodes to filter, and choose **All years** to return to the overview. Sphere sizes follow commit counts and language artwork identifies the dominant language. Browse list provides a text alternative. Shift-drag/right-drag pans, drag rotates, and scroll zooms; touch uses one finger to rotate and two to pan/zoom. Source and rebuild instructions: `tools/atlas/` and `docs/atlas-2026-10-02.md`. This is a static snapshot; the site does not make live GitHub API requests.
+
+### Workshop narration
+
+The workshop graph includes short synthetic narration for every chapter, deeper
+concept, and illustrative improvement step. Selecting an idea starts its clip;
+use Pause/Resume, Replay, or the speed selector. Turn off “Narrate on selection”
+for manual playback. Loading the page starts silently. A readable transcript is
+available alongside the player, including when audio is unavailable.
+
+Spoken copy is in `workshop/narration-scripts.js`; the corresponding mono MP3s
+are in `workshop/audio/`. These are static assets with no TTS API or browser
+speech dependency. The current voice is macOS Samantha, rendered with Narrate's
+native backend and normalized to -16 LUFS. When changing a script, regenerate
+its matching clip and verify script IDs against `workshop/content.js`.
