@@ -1,80 +1,35 @@
-import {stages, tools} from './content.js';
+import {nodes,edges,groups,chapters,sources,simulation,observed} from './content.js';
 import {createScene} from './scene.js';
-const $=id=>document.getElementById(id);
+const $=id=>document.getElementById(id), byId=new Map(nodes.map(n=>[n.id,n]));
 const preferFlat=()=>matchMedia('(max-width:760px), (prefers-reduced-motion:reduce)').matches;
-const state={stage:'prepare',view:'journey',flat:false,presenter:false,graph:false};
-let demo=0;
-let graphOpen=false;
-const backgroundInert=new Map();
-function renderGraphMode(){
-  const panel=$('map-panel'), toggle=$('graph-toggle');
-  document.body.classList.toggle('graph-expanded',state.graph);
-  toggle.setAttribute('aria-expanded',String(state.graph));
-  toggle.textContent=state.graph?'Exit full-page graph ×':'Focus on the graph ↗';
-  if(state.graph===graphOpen)return;
-  graphOpen=state.graph;
-  if(graphOpen){
-    panel.setAttribute('role','dialog');
-    panel.setAttribute('aria-modal','true');
-    panel.setAttribute('aria-labelledby','map-heading');
-    const outside=[...document.querySelectorAll('body > :not(main):not(script), main > :not(.explorer), .story-panel')];
-    outside.forEach(element=>{backgroundInert.set(element,element.inert);element.inert=true});
-    toggle.focus({preventScroll:true});
-  }else{
-    panel.removeAttribute('role');panel.removeAttribute('aria-modal');panel.removeAttribute('aria-labelledby');
-    backgroundInert.forEach((inert,element)=>{element.inert=inert});backgroundInert.clear();
-    toggle.focus({preventScroll:true});
-  }
+const state={chapter:chapters[0].id,node:chapters[0].focus,graph:false,flat:preferFlat(),overview:false,notes:false};
+let expanded=false,simulationIndex=0,lastChapter='';const previousInert=new Map();
+const scene=createScene($('scene'),{nodes,edges,groups,onSelect(id){navigate({node:id,overview:false});$('node-details').open=true;$('node-details').scrollIntoView({block:'nearest'});}});
+function readURL(){const p=new URLSearchParams(location.search);state.chapter=chapters.some(c=>c.id===p.get('chapter'))?p.get('chapter'):chapters[0].id;const chapter=chapters.find(c=>c.id===state.chapter);state.node=byId.has(p.get('node'))?p.get('node'):chapter.focus;state.graph=p.get('graph')==='full';state.flat=p.has('flat')?p.get('flat')==='1':preferFlat();state.overview=p.get('overview')==='1';state.notes=p.get('notes')==='1';}
+function navigate(change){Object.assign(state,change);const chapter=chapters.find(c=>c.id===state.chapter);const u=new URL(location.href);const values={chapter:state.chapter===chapters[0].id?null:state.chapter,node:state.node===chapter.focus?null:state.node,graph:state.graph?'full':null,flat:state.flat===preferFlat()?null:state.flat?'1':'0',overview:state.overview?'1':null,notes:state.notes?'1':null};for(const [key,value] of Object.entries(values)){if(value===null)u.searchParams.delete(key);else u.searchParams.set(key,value)}['step','view','present'].forEach(key=>u.searchParams.delete(key));if(u.href!==location.href)history.pushState({},'',u);render(true);}
+function fullPage(){document.body.classList.toggle('graph-expanded',state.graph);$('graph-toggle').setAttribute('aria-expanded',String(state.graph));$('graph-toggle').textContent=state.graph?'Exit full-page ×':'Full-page graph ↗';if(expanded===state.graph)return;expanded=state.graph;if(expanded){$('map-panel').setAttribute('role','dialog');$('map-panel').setAttribute('aria-modal','true');document.querySelectorAll('body > :not(main):not(script):not(.sr-only), main > :not(#map-panel)').forEach(e=>{previousInert.set(e,e.inert);e.inert=true});}else{$('map-panel').removeAttribute('role');$('map-panel').removeAttribute('aria-modal');previousInert.forEach((v,e)=>e.inert=v);previousInert.clear();}$('graph-toggle').focus({preventScroll:true});}
+function link(source,label=source.name){const a=document.createElement('a');a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;return a;}
+function render(announce=false){const index=chapters.findIndex(c=>c.id===state.chapter),chapter=chapters[index],node=byId.get(state.node);const start=chapters.slice(0,index).reduce((sum,c)=>sum+c.minutes,0);$('chapter-meta').textContent=`${String(index+1).padStart(2,'0')} / ${chapter.name.toUpperCase()}`;$('chapter-time').textContent=`${start}–${start+chapter.minutes} min`;
+ for(const [id,key] of [['chapter-title','title'],['chapter-body','body'],['chapter-judgment','judgment'],['chapter-example','example'],['chapter-question','question'],['chapter-status','status']])$(id).textContent=chapter[key];
+ $('chapter-count').textContent=`${index+1} / ${chapters.length}`;$('chapter-prev').disabled=index===0;$('chapter-next').disabled=index===chapters.length-1;
+ $('chapter-beats').replaceChildren(...chapter.beats.map(beat=>{const li=document.createElement('li');li.textContent=beat;return li}));$('live-notes').open=state.notes;
+ $('chapter-sources').replaceChildren(...chapter.source.map(id=>link(sources.find(s=>s.id===id),({api:'API contracts',mcp:'MCP',agents:'Agent patterns',harness:'Agent harnesses',evals:'Agent evaluations',managed:'Execution architecture',evolve:'AlphaEvolve',durable:'Durable execution'})[id]+' ↗')));
+ for(const [id,key] of [['node-name','name'],['node-what','what'],['node-judgment','judgment'],['node-failure','failure'],['node-example','example']])$(id).textContent=node[key];const source=sources.find(s=>s.id===node.source);$('node-source').href=source.url;$('node-source').textContent=`Source context: ${source.name} ↗`;
+ const connections=edges.filter(e=>e.from===node.id||e.to===node.id);$('node-connections').replaceChildren(...connections.map(edge=>{const other=byId.get(edge.from===node.id?edge.to:edge.from);const button=document.createElement('button');button.type='button';button.textContent=edge.from===node.id?`${edge.label} → ${other.name}`:`${other.name} → ${edge.label}`;button.addEventListener('click',()=>{navigate({node:other.id,overview:false});$('node-details').open=true});return button}));
+ $('flat-toggle').setAttribute('aria-pressed',String(state.flat));$('flat-toggle').textContent=state.flat?'Use 3D view':'Flat view';$('overview-toggle').setAttribute('aria-pressed',String(state.overview));$('graph-hint').textContent=state.overview?'The whole system. Click a concept, or choose a chapter below.':'Follow the highlighted concepts. Click a node to go deeper.';document.querySelectorAll('#chapters button').forEach(button=>{if(button.dataset.chapter===chapter.id)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current')});syncCameraControls();fullPage();scene.setMode(state.flat);scene.setFocus([...chapter.nodes,node.id],node.id,state.overview);
+ if(lastChapter!==chapter.id){document.querySelector('.story-panel').scrollTop=0;lastChapter=chapter.id;}
+ if(announce)$('announcement').textContent=`Chapter ${index+1}: ${chapter.name}. Selected concept: ${node.name}.`;
 }
-const scene=createScene($('scene'),{nodes:tools,onSelect(id){const stage=stages.find(item=>item.node===id);if(stage)navigate({stage:stage.id})}});
-function readURL(){const p=new URLSearchParams(location.search);state.stage=stages.some(s=>s.id===p.get('step'))?p.get('step'):'prepare';state.view=['journey','map','facilitator'].includes(p.get('view'))?p.get('view'):'journey';state.flat=p.has('flat')?p.get('flat')==='1':preferFlat();state.presenter=p.get('present')==='1';state.graph=p.get('graph')==='full';}
-function navigate(change){Object.assign(state,change);const u=new URL(location.href);for(const [key,value,defaultValue] of [['step',state.stage,'prepare'],['view',state.view,'journey'],['flat',state.flat?'1':'0',preferFlat()?'1':'0'],['present',state.presenter?'1':'0','0'],['graph',state.graph?'full':'embedded','embedded']]){if(value===defaultValue)u.searchParams.delete(key);else u.searchParams.set(key,value)}if(u.href!==location.href){try{history.pushState({},'',u)}catch{/* Some file viewers cannot write history. The local interaction still works. */}}render(true)}
-function render(announce=false){const index=stages.findIndex(s=>s.id===state.stage),stage=stages[index],tool=tools.find(t=>t.id===stage.node);
-  $('graph-step-label').textContent=`${String(index+1).padStart(2,'0')} / ${stage.title.toUpperCase()}`;
-  $('graph-step-title').textContent=stage.headline;
-  $('graph-step-benefit').textContent=stage.benefit;
-  $('graph-step-artifact').textContent=stage.artifact;
-  $('graph-step-question').textContent=stage.prompt;
-  $('graph-step-count').textContent=`${index+1} / ${stages.length}`;
-  $('graph-prev').disabled=index===0;
-  $('graph-next').disabled=index===stages.length-1;
-  $('stage-eyebrow').textContent=`${String(index+1).padStart(2,'0')} / ${stage.eyebrow}`;
-  $('step-counter').textContent=`${index+1} of ${stages.length}`;
-  for(const [element,field] of [['stage-title','headline'],['stage-description','description'],['stage-benefit','benefit'],['stage-artifact','artifact'],['stage-check','check'],['stage-boundary','boundary'],['teaching-prompt','prompt'],['teaching-exercise','exercise']])$(element).textContent=stage[field];
-  for(const [element,field] of [['tool-title','name'],['tool-role','role'],['tool-owns','owns'],['tool-excludes','excludes'],['tool-location','location'],['tool-maturity','maturity']])$(element).textContent=tool[field];
-  document.querySelectorAll('[data-stage]').forEach(button=>{if(button.dataset.stage===state.stage)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current')});
-  document.querySelectorAll('[data-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.view===state.view)));
-  $('prev-stage').disabled=index===0;$('next-stage').disabled=index===stages.length-1;
-  $('next-stage').replaceChildren(document.createTextNode(index===stages.length-1?'Journey complete':'Next step →'));
-  $('stage-progress').replaceChildren(...stages.map((s,i)=>{const dot=document.createElement('span');dot.className=i===index?'active':'';dot.setAttribute('aria-hidden','true');return dot}));
-  $('technical-panel').hidden=state.view!=='map';$('facilitator-panel').hidden=state.view!=='facilitator';
-  $('flat-toggle').setAttribute('aria-pressed',String(state.flat));$('flat-toggle').textContent=state.flat?'Use 3D view':'Use flat view';
-  document.querySelectorAll('.scene-controls button').forEach(b=>b.disabled=state.flat);
-  document.body.classList.toggle('presentation',state.presenter);$('presenter-toggle').setAttribute('aria-pressed',String(state.presenter));$('presenter-toggle').textContent=state.presenter?'Exit presentation':'Presentation mode';
-  renderGraphMode();
-  scene.selectNode(stage.node);scene.setMode(state.flat?'flat':'spatial');
-  if(announce)$('announcement').textContent=`Step ${index+1}: ${stage.title}. ${stage.headline}`;
-}
-document.querySelectorAll('[data-stage]').forEach(button=>button.addEventListener('click',()=>navigate({stage:button.dataset.stage})));
-document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>navigate({view:button.dataset.view})));
-function advance(delta){const index=stages.findIndex(s=>s.id===state.stage),next=stages[index+delta];if(next)navigate({stage:next.id})}
-$('graph-prev').addEventListener('click',()=>advance(-1));$('graph-next').addEventListener('click',()=>advance(1));
-$('prev-stage').addEventListener('click',()=>advance(-1));$('next-stage').addEventListener('click',()=>advance(1));
-$('graph-toggle').addEventListener('click',()=>navigate({graph:!state.graph}));
-$('flat-toggle').addEventListener('click',()=>navigate({flat:!state.flat}));
-$('rotate-left').addEventListener('click',()=>scene.rotate(-12));$('rotate-right').addEventListener('click',()=>scene.rotate(12));$('zoom-out').addEventListener('click',()=>scene.zoomBy(-.1));$('zoom-in').addEventListener('click',()=>scene.zoomBy(.1));$('reset-camera').addEventListener('click',()=>scene.reset());
-$('presenter-toggle').addEventListener('click',()=>navigate({presenter:!state.presenter}));
-window.addEventListener('popstate',()=>{readURL();render(true)});
-document.addEventListener('keydown',event=>{if(state.graph){
-  if(event.key==='Escape'){event.preventDefault();navigate({graph:false});return}
-  if(event.key==='Tab'){
-    const controls=[...$('map-panel').querySelectorAll('button:not(:disabled),a[href]')].filter(element=>element.getClientRects().length);
-    const first=controls[0],last=controls[controls.length-1];
-    if(event.shiftKey&&event.target===first){event.preventDefault();last.focus();return}
-    if(!event.shiftKey&&event.target===last){event.preventDefault();first.focus();return}
-  }
-}if(event.key==='Escape'&&state.presenter){navigate({presenter:false});return}if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;const element=event.target;if(element.closest('input,textarea,select,[contenteditable=true]'))return;if(element.closest('.steps,.story-navigation')&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();advance(event.key==='ArrowRight'?1:-1)}});
-$('demo-action').addEventListener('click',()=>{demo=(demo+1)%3;const status=$('demo-status');status.classList.toggle('failed',demo===1);status.classList.toggle('corrected',demo===2);if(demo===1){status.textContent='CHECK FAILED · Expected 1 request. Observed 2.';$('demo-evidence').textContent='Return to the bounded build task. Keep the same acceptance check.';$('demo-action').textContent='Inspect the corrected example →';navigate({stage:'build'})}else if(demo===2){status.textContent='ILLUSTRATIVE RECHECK · Expected 1. Observed 1.';$('demo-evidence').textContent='One check passes in this example. Review the exact candidate, then inspect the other checks.';$('demo-action').textContent='Reset the example ↺';navigate({stage:'review'})}else{status.textContent='Ready to inspect the behavior.';$('demo-evidence').textContent='A visible page is only the beginning of the check.';$('demo-action').textContent='Try the duplicate check ↗'}$('announcement').textContent=status.textContent});
-readURL();
-if (!CSS.supports('transform-style', 'preserve-3d')) state.flat = true;
-render();
+function moveChapter(delta){const index=chapters.findIndex(c=>c.id===state.chapter),next=chapters[index+delta];if(next){$('node-details').open=false;navigate({chapter:next.id,node:next.focus,overview:false})}}
+function syncCameraControls(){['rotate-left','rotate-right'].forEach(id=>$(id).disabled=state.flat);['zoom-out','zoom-in','reset-camera'].forEach(id=>$(id).disabled=state.flat&&matchMedia('(max-width:760px)').matches);}
+matchMedia('(max-width:760px)').addEventListener('change',syncCameraControls);
+$('chapters').replaceChildren(...chapters.map((chapter,i)=>{const button=document.createElement('button');button.type='button';button.dataset.chapter=chapter.id;const number=document.createElement('span');number.textContent=String(i+1).padStart(2,'0');const name=document.createElement('strong');name.textContent=chapter.name;const time=document.createElement('small');time.textContent=`${chapter.minutes} min`;button.append(number,name,time);button.addEventListener('click',()=>{$('node-details').open=false;navigate({chapter:chapter.id,node:chapter.focus,overview:false})});return button}));
+$('map-stats').textContent=`${nodes.length} concepts · ${edges.length} relationships`;
+$('chapter-prev').addEventListener('click',()=>moveChapter(-1));$('chapter-next').addEventListener('click',()=>moveChapter(1));$('flat-toggle').addEventListener('click',()=>navigate({flat:!state.flat}));$('graph-toggle').addEventListener('click',()=>navigate({graph:!state.graph}));$('overview-toggle').addEventListener('click',()=>navigate({overview:!state.overview}));$('all-labels').addEventListener('change',e=>scene.setLabels(e.target.checked));$('rotate-left').addEventListener('click',()=>scene.rotate(-10));$('rotate-right').addEventListener('click',()=>scene.rotate(10));$('zoom-out').addEventListener('click',()=>scene.zoomBy(-.1));$('zoom-in').addEventListener('click',()=>scene.zoomBy(.1));$('reset-camera').addEventListener('click',()=>scene.reset());
+$('return-to-chapter').addEventListener('click',()=>{const chapter=chapters.find(c=>c.id===state.chapter);$('node-details').open=false;navigate({node:chapter.focus,overview:false});document.querySelector('.story-panel').scrollTop=0;});
+$('live-notes').addEventListener('toggle',()=>{if($('live-notes').open!==state.notes)navigate({notes:$('live-notes').open})});
+window.addEventListener('popstate',()=>{readURL();render()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.graph){e.preventDefault();navigate({graph:false});return;}if(e.altKey||e.ctrlKey||e.metaKey||e.target.closest('input,textarea,select,[contenteditable]'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();moveChapter(e.key==='ArrowRight'?1:-1)}if(e.key==='Tab'&&state.graph){const focusable=[...$('map-panel').querySelectorAll('a[href],button:not(:disabled),input,summary')].filter(el=>el.getClientRects().length);const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+function renderSimulation(){const step=simulation[simulationIndex];['title','body','result'].forEach(key=>$(`simulation-${key}`).textContent=step[key]);document.querySelectorAll('#simulation-steps button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===simulationIndex)));}
+$('simulation-steps').replaceChildren(...simulation.map((step,i)=>{const button=document.createElement('button');button.type='button';button.textContent=`${i+1}. ${step.label}`;button.addEventListener('click',()=>{simulationIndex=i;renderSimulation()});return button}));renderSimulation();
+$('source-list').replaceChildren(...sources.map(source=>{const article=document.createElement('article');article.append(link(source));const date=document.createElement('small');date.textContent=`${source.date} · observed ${observed}`;const claim=document.createElement('p');claim.textContent=source.claim;article.append(date,claim);return article}));
+readURL();render();$('process-summary').hidden=true;

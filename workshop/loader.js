@@ -1,15 +1,10 @@
-// Keep the teaching material readable if a module fails to load.
-import('./app.js').catch(() => {
-  const host = document.getElementById('scene');
-  host.replaceChildren();
-  const message = document.createElement('p');
-  message.className = 'load-error';
-  message.textContent = 'The interactive map could not start. The process summary remains available below. Reload this page to try the interactive map again.';
-  const link = document.createElement('a');
-  link.href = '../';
-  link.textContent = 'Explore Sanifu →';
-  link.className = 'load-error-link';
-  host.append(message, link);
-  document.querySelectorAll('button').forEach(button => { button.disabled = true; });
-  document.getElementById('process-summary').hidden = false;
+// Keep a complete static story available if any interactive module fails.
+import('./app.js').catch(()=>{
+ document.body.classList.remove('graph-expanded');
+ const panel=document.getElementById('map-panel');panel.removeAttribute('role');panel.removeAttribute('aria-modal');
+ document.querySelectorAll('[inert]').forEach(element=>element.inert=false);
+ const message=document.createElement('p');message.className='load-message';message.textContent='The interactive graph could not start. The eight-chapter story is available below; reload to try the graph again.';
+ document.getElementById('scene').replaceChildren(message);
+ document.querySelectorAll('button').forEach(button=>button.disabled=true);
+ document.getElementById('process-summary').hidden=false;
 });

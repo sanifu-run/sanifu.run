@@ -1,50 +1,28 @@
-const positions = [
-  {x:85,y:352,h:35}, {x:250,y:217,h:64}, {x:419,y:311,h:82},
-  {x:554,y:139,h:112}, {x:718,y:38,h:145}
-];
-export function createScene(host, {nodes, onSelect}) {
-  let camera = {yaw:-24,pitch:53,zoom:1}, selected = nodes[0].id, flat = false;
-  let activePointer = null, origin = null, dragged = false;
-  host.replaceChildren();
-  const cameraEl = document.createElement('div'); cameraEl.className = 'scene-camera';
-  const world = document.createElement('div'); world.className = 'scene-world';
-  const floor = document.createElement('div'); floor.className = 'scene-floor'; floor.setAttribute('aria-hidden','true'); world.append(floor);
-  const ns='http://www.w3.org/2000/svg', svg=document.createElementNS(ns,'svg');
-  svg.classList.add('paths'); svg.setAttribute('viewBox','0 0 860 520'); svg.setAttribute('aria-hidden','true');
-  const path=document.createElementNS(ns,'path'); path.setAttribute('d','M140 396 C200 396 190 261 305 261 S400 355 474 355 S520 183 609 183 S704 82 773 82'); svg.append(path);
-  const feedback=document.createElementNS(ns,'path'); feedback.classList.add('feedback-path'); feedback.setAttribute('d','M773 82 C900 470 500 545 305 261'); svg.append(feedback);world.append(svg);
-  const buttons = new Map();
-  nodes.forEach((node,index)=>{
-    const p=positions[index], station=document.createElement('div'); station.className='station'; station.style.left=`${p.x}px`;station.style.top=`${p.y}px`;station.style.setProperty('--height',`${p.h}px`);
-    ['top','front','side'].forEach(face=>{const el=document.createElement('div');el.className=`station-face station-${face}`;el.setAttribute('aria-hidden','true');station.append(el)});
-    const button=document.createElement('button');button.type='button';button.className='station-label';button.dataset.node=node.id;button.setAttribute('aria-label',`${node.name}: ${node.role}`);
-    const name=document.createElement('strong');name.textContent=node.name;
-    const role=document.createElement('span');role.textContent=['Prepare','Plan · release','Build','Review','Improve'][index];button.append(name,role);
-    button.addEventListener('click',event=>{if(dragged){event.preventDefault();return}onSelect(node.id)});
-    station.append(button);world.append(station);buttons.set(node.id,{button,station,height:p.h});
-  });
-  const marker=document.createElement('div');marker.className='scene-marker';marker.setAttribute('aria-hidden','true');world.append(marker);cameraEl.append(world);host.append(cameraEl);
-  function draw(){
-    const fit=Math.min(host.clientWidth/1040,host.clientHeight/480,host.closest('.graph-expanded')?2.5:1.1);
-    const yaw=camera.yaw*Math.PI/180, pitch=camera.pitch*Math.PI/180;
-    // Center the raised labels, rather than the ground plane beneath them.
-    const projected=positions.map(p=>(
-      (Math.sin(yaw)*(p.x+55-430)+Math.cos(yaw)*(p.y+42-260))*Math.cos(pitch)
-      -(p.h+45)*Math.sin(pitch)
-    ));
-    const midpoint=(Math.min(...projected)+Math.max(...projected))/2;
-    cameraEl.style.transform=`translateY(${(-midpoint-32)*fit*camera.zoom}px) scale(${fit*camera.zoom}) rotateX(${camera.pitch}deg) rotateZ(${camera.yaw}deg)`;
-    buttons.forEach(({button,height})=>button.style.transform=`translateZ(${height+45}px) rotateZ(${-camera.yaw}deg) rotateX(${-camera.pitch}deg)`);
-  }
-  const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  function setCamera(next){camera={yaw:clamp(next.yaw??camera.yaw,-65,65),pitch:clamp(next.pitch??camera.pitch,25,65),zoom:clamp(next.zoom??camera.zoom,.7,1.4)};draw()}
-  function selectNode(id){selected=id;buttons.forEach(({button,station},key)=>{button.setAttribute('aria-pressed',String(key===selected));station.classList.toggle('selected',key===selected)})}
-  function pointerDown(event){if(flat||event.button!==0)return;activePointer=event.pointerId;origin={x:event.clientX,y:event.clientY,...camera};dragged=false;}
-  function pointerMove(event){if(event.pointerId!==activePointer||!origin)return;const dx=event.clientX-origin.x,dy=event.clientY-origin.y;if(Math.abs(dx)>7){dragged=true;host.classList.add('is-dragging');if(!host.hasPointerCapture(event.pointerId))host.setPointerCapture(event.pointerId);setCamera({yaw:origin.yaw+dx*.18,pitch:origin.pitch-dy*.12})}}
-  function pointerEnd(event){if(event.pointerId!==activePointer)return;if(host.hasPointerCapture(event.pointerId))host.releasePointerCapture(event.pointerId);activePointer=null;origin=null;host.classList.remove('is-dragging');setTimeout(()=>{dragged=false},0)}
-  host.addEventListener('pointerdown',pointerDown);host.addEventListener('pointermove',pointerMove);host.addEventListener('pointerup',pointerEnd);host.addEventListener('pointercancel',pointerEnd);
-  const resize = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(draw) : null;
-  if (resize) resize.observe(host); else window.addEventListener('resize', draw);
-  selectNode(selected);draw();
-  return {selectNode,setCamera,getCamera:()=>({...camera}),rotate:(yaw,pitch=0)=>setCamera({yaw:camera.yaw+yaw,pitch:camera.pitch+pitch}),zoomBy:delta=>setCamera({zoom:camera.zoom+delta}),reset:()=>setCamera({yaw:-24,pitch:53,zoom:1}),setMode(mode){flat=mode==='flat';host.classList.toggle('scene-flat',flat);draw()},destroy(){if(resize)resize.disconnect();else window.removeEventListener('resize',draw);host.removeEventListener('pointerdown',pointerDown);host.removeEventListener('pointermove',pointerMove);host.removeEventListener('pointerup',pointerEnd);host.removeEventListener('pointercancel',pointerEnd);host.replaceChildren()}};
+// Perspective projection of a real three-dimensional concept graph, without dependencies.
+export function createScene(host,{nodes,edges,groups,onSelect}) {
+ const ns='http://www.w3.org/2000/svg';
+ const svg=document.createElementNS(ns,'svg');svg.classList.add('graph-lines');svg.setAttribute('aria-hidden','true');
+ const defs=document.createElementNS(ns,'defs');
+ ['operation','rule','improvement'].forEach(kind=>{const marker=document.createElementNS(ns,'marker');marker.id=`arrow-${kind}`;marker.setAttribute('viewBox','0 0 10 10');marker.setAttribute('refX','8');marker.setAttribute('refY','5');marker.setAttribute('markerWidth','5');marker.setAttribute('markerHeight','5');marker.setAttribute('orient','auto-start-reverse');const path=document.createElementNS(ns,'path');path.setAttribute('d','M 0 0 L 10 5 L 0 10 z');path.setAttribute('fill',({operation:'#be93a4',rule:'#f2c993',improvement:'#91d3b6'})[kind]);marker.append(path);defs.append(marker)});svg.append(defs);
+ const planes=groups.map(group=>{const polygon=document.createElementNS(ns,'polygon');polygon.classList.add('group-plane');polygon.style.setProperty('--group-color',group.color);svg.append(polygon);const label=document.createElement('div');label.className='group-name';label.textContent=group.name;label.style.color=group.color;return {group,polygon,label}});
+ const paths=edges.map(edge=>{const path=document.createElementNS(ns,'path');path.classList.add('connection',edge.kind);path.setAttribute('marker-end',`url(#arrow-${edge.kind})`);svg.append(path);return {edge,path}});
+ host.replaceChildren(svg);
+ planes.forEach(({label})=>host.append(label));
+ const buttons=new Map();nodes.forEach(node=>{const button=document.createElement('button');button.type='button';button.className='graph-node';button.dataset.node=node.id;button.setAttribute('aria-label',node.name);button.title=node.name;button.style.setProperty('--node-color',groups.find(g=>g.id===node.group).color);const dot=document.createElement('i');dot.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=node.name;button.append(dot,label);button.addEventListener('click',()=>{if(!dragged)onSelect(node.id)});host.append(button);buttons.set(node.id,button)});
+ let camera={yaw:-12,pitch:20,zoom:1}, flat=false, selected='', active=new Set(), overview=false, labels=false;
+ let pointer=null,origin=null,dragged=false;
+ const byId=new Map(nodes.map(n=>[n.id,n]));
+ function project([x,y,z]){const a=(flat?0:camera.yaw)*Math.PI/180,b=(flat?0:camera.pitch)*Math.PI/180;const xx=x*Math.cos(a)+z*Math.sin(a),depth=-x*Math.sin(a)+z*Math.cos(a);return [xx,y*Math.cos(b)-depth*Math.sin(b),y*Math.sin(b)+depth*Math.cos(b)];}
+ function draw(){const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;svg.setAttribute('viewBox',`0 0 ${width} ${height}`);const projected=nodes.map(n=>project(n.position));const xs=projected.map(p=>p[0]),ys=projected.map(p=>p[1]);const minX=Math.min(...xs)-90,maxX=Math.max(...xs)+90,minY=Math.min(...ys)-80,maxY=Math.max(...ys)+95;const fit=Math.min((width-30)/(maxX-minX),(height-25)/(maxY-minY))*camera.zoom;const cx=(minX+maxX)/2,cy=(minY+maxY)/2;const place=p=>{const v=project(p);return [(v[0]-cx)*fit+width/2,(v[1]-cy)*fit+height/2,v[2]]};const points=new Map(nodes.map(n=>[n.id,place(n.position)]));
+ planes.forEach(({group,polygon,label})=>{const [x,y,z]=group.center;const corners=[[-175,-80],[175,-80],[175,160],[-175,160]].map(([dx,dy])=>place([x+dx,y+dy,z-25]));polygon.setAttribute('points',corners.map(p=>`${p[0]},${p[1]}`).join(' '));const p=place([x,y-96,z]);label.style.left=`${p[0]}px`;label.style.top=`${p[1]}px`;label.classList.toggle('subdued',!overview&&!nodes.some(n=>n.group===group.id&&active.has(n.id)));});
+ paths.forEach(({edge,path})=>{const a=points.get(edge.from),b=points.get(edge.to);const dx=b[0]-a[0],dy=b[1]-a[1],length=Math.max(1,Math.hypot(dx,dy));const sx=a[0]+dx/length*9,sy=a[1]+dy/length*9,ex=b[0]-dx/length*12,ey=b[1]-dy/length*12;const bend=edge.kind==='improvement'?Math.min(45,length*.1):0;path.setAttribute('d',`M${sx},${sy} Q${(sx+ex)/2-dy/length*bend},${(sy+ey)/2+dx/length*bend} ${ex},${ey}`);const related=selected&&(edge.from===selected||edge.to===selected);path.classList.toggle('related',!!related);path.classList.toggle('active',overview||active.has(edge.from)&&active.has(edge.to));});
+ nodes.forEach(n=>{const button=buttons.get(n.id),p=points.get(n.id);button.style.left=`${p[0]}px`;button.style.top=`${p[1]}px`;button.style.zIndex=String(20+Math.round((p[2]+700)/100));button.classList.toggle('active',active.has(n.id));button.classList.toggle('selected',n.id===selected);button.classList.toggle('anchor',overview&&nodes.find(v=>v.group===n.group).id===n.id);button.setAttribute('aria-pressed',String(n.id===selected));});host.classList.toggle('all-labels',labels);host.classList.toggle('overview',overview);host.classList.toggle('flat',flat);
+ }
+ function setFocus(ids,id,all=false){active=new Set(ids);selected=id;overview=all;draw();}
+ function rotate(yaw,pitch=0){camera.yaw=Math.max(-70,Math.min(70,camera.yaw+yaw));camera.pitch=Math.max(-30,Math.min(50,camera.pitch+pitch));draw()}
+ function down(e){if(flat||e.button!==0||e.target.closest('button'))return;pointer=e.pointerId;origin={x:e.clientX,y:e.clientY,...camera};dragged=false;}
+ function move(e){if(e.pointerId!==pointer||!origin)return;const dx=e.clientX-origin.x,dy=e.clientY-origin.y;if(Math.hypot(dx,dy)>6){dragged=true;host.classList.add('dragging');if(!host.hasPointerCapture(e.pointerId))host.setPointerCapture(e.pointerId);camera.yaw=Math.max(-70,Math.min(70,origin.yaw+dx*.18));camera.pitch=Math.max(-30,Math.min(50,origin.pitch-dy*.15));draw();}}
+ function up(e){if(e.pointerId!==pointer)return;if(host.hasPointerCapture(e.pointerId))host.releasePointerCapture(e.pointerId);pointer=null;origin=null;host.classList.remove('dragging');queueMicrotask(()=>dragged=false)}
+ host.addEventListener('pointerdown',down);host.addEventListener('pointermove',move);host.addEventListener('pointerup',up);host.addEventListener('pointercancel',up);const observer=new ResizeObserver(draw);observer.observe(host);
+ return {setFocus,rotate,zoomBy(delta){camera.zoom=Math.max(.7,Math.min(1.8,camera.zoom+delta));draw()},reset(){camera={yaw:-12,pitch:20,zoom:1};draw()},setMode(value){flat=value;draw()},setLabels(value){labels=value;draw()},destroy(){observer.disconnect();host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.replaceChildren()}};
 }
