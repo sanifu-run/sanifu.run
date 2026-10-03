@@ -105,7 +105,7 @@ export function App() {
         <p>{count === null ? 'The repositories I started.' : `${visibleCount} ${visibleCount === 1 ? 'repository' : 'repositories'} I started${activeYear ? ` in ${activeYear}` : ''}.`}</p>
         <p className="byline">Choose a year. Find a project. Explore its source.</p>
       </header>
-      <div className="page-actions"><a href="/">Back to Sanifu</a><button type="button" aria-pressed={listOpen} onClick={() => setListOpen(!listOpen)}>{listOpen ? 'Graph view' : 'Browse list'}</button></div>
+      <div className="page-actions"><nav className="site-nav" aria-label="Main navigation"><a href="/atlas/" aria-current="page">Atlas</a><a href="/workshop/">Workshop</a></nav><button type="button" aria-pressed={listOpen} onClick={() => setListOpen(!listOpen)}>{listOpen ? 'Graph view' : 'Browse list'}</button></div>
       <div className="repo-search" role="search" aria-label="Find a repository">
         <input type="search" role="combobox" aria-label="Search repositories"
           placeholder="Find a repository…" autoComplete="off" spellCheck="false"

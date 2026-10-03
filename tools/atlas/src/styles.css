@@ -18,3 +18,5 @@
 .instructions .gesture-desktop {font-size:11px;color:var(--muted-white);margin-top:0}.instructions .gesture-mobile {display:none}@media(max-width:700px){.instructions .gesture-desktop {display:none}.instructions .gesture-mobile {display:block;font-size:10px;color:var(--muted-white);margin-top:0}}
 
 .repository-label {max-width:230px;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;width:max-content}@media(max-width:700px){.repository-label {max-width:165px}}
+
+.page-actions{z-index:7}@media(max-width:700px){.page-actions>button{position:absolute;right:0;top:80px}}
