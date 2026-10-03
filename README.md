@@ -21,3 +21,7 @@ Before setting the public HTTPS `chatEndpoint`, verify the Sanifu backend's URL,
 ## Publishing
 
 The GitHub repository is `sanifu-run/sanifu.run`. Publish from `main` at the repository root with GitHub Pages and the included `CNAME`. Cloudflare holds DNS for `sanifu.run`; verify Pages, custom-domain and HTTPS status after changing records. The local `docs/design/v1` reference and earlier unused brand files are preserved but excluded from the public repository. No build service or paid website infrastructure is needed.
+
+## Interactive workshop page
+
+`/workshop/` explains the six-step method with a rotatable, selectable process map and a booking-request teaching illustration. The homepage links to it from the offer. `?graph=full` opens the focused graph with a selected-step teaching panel; the flat view, keyboard navigation and static summary provide alternative ways to follow the process. Phones and reduced-motion viewers start with the readable flat map and can choose 3D; an explicit view choice persists in the URL. The tool map describes an illustrative workflow and evolving components, not a live service integration. No build step or additional hosted dependency is required.
