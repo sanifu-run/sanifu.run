@@ -46,3 +46,7 @@ rendered with Narrate’s Pocket TTS backend on his DGX through Spark. The refer
 stays private; only the finished narration clips are served by the site. When
 changing a script, regenerate its matching clip and verify script IDs against
 `workshop/content.js`.
+
+## Current audience and offer
+
+Build your AI software idea with a senior engineer beside you. The initial audience is entrepreneurs who need a starting point and vibe coders who want senior engineering coaching on an existing prototype. The homepage, workshop introduction and chat prompts use this focus. See `../brain/docs/adr/016-entrepreneur-and-vibe-coder-positioning.md` and `docs/brand.md`. Employment training and client-income messaging are not the acquisition proposition. Specialist ML remains a secondary, fit-assessed offer.
