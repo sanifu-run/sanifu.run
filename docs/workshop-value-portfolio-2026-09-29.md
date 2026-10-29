@@ -1,5 +1,9 @@
 # Workshop value and selected projects
 
+Superseded 2026-10-29. The public offer is the Zati Agency workshop in `docs/brand.md`. Prices, the attendee discount, community access, and the coaching proposition below are historical.
+
+
+
 Prepared 2026-09-29 Pacific. This revision expands the existing workshop offer with concrete practice, included guidance, common buying questions, and David's six selected projects. It preserves the approved identity, existing chat/brief controls, scope-call destination, price and support bounds. The portfolio links to Zerfoo, Serenity, Dira, Kazi, AgentGavel and Ajent. AMOS is explicitly a developing application foundation, not an available workshop platform. The phone link is labeled as an AI line.
 
 Public project descriptions were checked against the six homepages on 2026-09-30 UTC. Their advertised purposes inform the descriptions; the page does not present them as Sanifu learner results or independent audits.

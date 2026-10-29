@@ -1,5 +1,9 @@
 # Chat activation — 28 September 2026
 
+Superseded for the public site on 2026-10-29. `config.js` now sets an empty `chatEndpoint` because the deployed assistant still answers from the retired Sanifu coaching offer. The previous public endpoint was `https://vg78ulztb1.execute-api.us-west-2.amazonaws.com/api/ask`. Do not restore it until its answers match `docs/brand.md`. Storage, email, and brief behavior below remain the contract for a future qualified endpoint. The sibling chat repository is not in this checkout.
+
+
+
 The founder authorized an AWS backend managed with IaC, a $50 AWS monthly budget, a $100 Experiential AI budget, 30-day AWS transcript retention, and emailed transcript copies. The founder confirmed the AI budget was configured and the owner inbox was verified.
 
 `config.js` points to the qualified Sanifu HTTP API. It contains only a public endpoint and the existing template video URL. Credentials remain server-side in Secrets Manager. `docs/design/v1` is unchanged. The existing AI phone link from site main `42991e2` is preserved.

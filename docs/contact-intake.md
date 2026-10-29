@@ -1,5 +1,9 @@
 # Opening contact request
 
+Superseded in part on 2026-10-29. The public page uses prepared answers and does not ask for contact details until a qualified assistant is connected. Business email on the page is david@sire.run. The backend prompt described below lives in the sibling chat repository, which is not in this checkout.
+
+
+
 The founder requested name and email collection at the start of chat for follow-up, with an explicit promise that Sanifu will never sell visitor information or spam visitors.
 
 The connected website greeting asks immediately. The backend prompt replaces the old prohibition on collecting contact details, asks only for missing details, and respects a refusal. Sharing remains optional. Details remain in the existing saved transcript and its owner email copies; no new contact database, newsletter enrollment or automatic outreach was added. Website and backend privacy copy explain the processing and retention of contact details.
