@@ -2,7 +2,7 @@
 
 Founder approved the ascending-block Sanifu logo image on 2026-09-27. The unchanged local reference is `docs/design/v1/sanifu-logo-approved.png`; the production copy is `assets/brand/sanifu-logo-approved.png`. Three rounded blocks rise along curved connections to a top dot, paired with a lowercase wordmark. The favicon uses this mark. The earlier interlocking ribbon artwork remains local for history and is excluded from the public repository.
 
-Reference: docs/design/v1 is preserved exactly and is not the current marketing system. The approved Sanifu logo remains the Atlas mark. Marketing pages follow Zati Agency: white background, ink #111, blue #283bf0, hairline #e5e5e5, and Arial (the published fallback on zati.agency; Geist is not redistributed here). Never add a registered trademark symbol. No remotely hosted commercial font is included. The old template background video is not used on the marketing page.
+Reference: docs/design/v1 is preserved exactly. The public pages keep the approved Sanifu identity: crimson #b40020, red #ef2446, white #ffffff, black #000000, the approved logo, the system sans-serif stack, and the existing background video. Never add a registered trademark symbol. No remotely hosted commercial font is included. Offer, price, and contact copy follow zati.agency. The visual design does not.
 
 ## Offering — aligned with zati.agency, 2026-10-29
 
