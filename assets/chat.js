@@ -18,10 +18,12 @@ if(!endpoint){
  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus()}
  document.querySelectorAll('[data-chat-open]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();open()}));launch.onclick=open;document.getElementById('chat-close').onclick=close;
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden&&!launch.hidden)close()});
- document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
+ document.getElementById('chat-history-wrap').hidden=true;document.getElementById('brief-generate').hidden=true;
+ const offlineBook=document.querySelector('[data-book-call]');
+ if(offlineBook)offlineBook.onclick=()=>window.open(siteBookingUrl,'_blank','noopener,noreferrer');
  const suggestions=document.getElementById('chat-suggestions');
  const quickAnswers=new Map([
-  ['What can a Zati workshop help my business with?','The workshops work on how customers find you, reach you, and hear back. Examples include clearer website pages, an AI receptionist for common caller questions, or an AI worker for a recurring task such as organizing inquiries or preparing a follow-up. Booking, transfers, and other connected actions are included only when they are in the agreed scope. You review anything before it is sent or acted on. These are possible projects, not a promise that every workshop includes all of them.'],
+  ['What can a Zati workshop help my business with?','The workshops work on how customers find you, reach you, and hear back. Examples include clearer website pages, an AI receptionist for common caller questions, or an AI worker for a recurring task such as organizing inquiries or preparing a follow-up. A workshop can also set up an assistant to summarize research, pull key details from documents, or draft marketing content. You check that draft against the source and decide what is used or shared. Booking, transfers, and other connected actions are included only when they are in the agreed scope. You review anything before it is sent or acted on. These are possible projects, not a promise that every workshop includes all of them.'],
   ['What does a workshop cost?','Private workshops are priced in USD per business. These are starting points; the actual work is agreed before booking. 2 hours is $500. 4 hours is $1,000. 8 hours is $2,000. 16 hours is $3,600. 32 hours is $6,400. Longer programmes can be split across sessions. If a workshop is a fit, you receive a written scope and quote before you book. The same prices are on https://zati.agency/pricing.'],
   ['What happens on the free discovery call?','The discovery call is 30 minutes and free. Bring your website and one task. You receive an AEO and GEO site audit report and see a demo relevant to your business. You keep the report whether or not you book a workshop. The call does not start paid work. Book it at https://calendly.com/david-sire/30min.'],
   ['Do I need technical experience?','Bring your knowledge of your business and the people who will use the setup. David works alongside you and explains the steps as you practise. Experience and fit are discussed on the free call.'],
@@ -124,7 +126,7 @@ function card(title){
  return bookingCard;
 }
 function when(start,zone){return new Intl.DateTimeFormat(undefined,{dateStyle:'full',timeStyle:'short',timeZone:zone}).format(new Date(start))+' · '+zone}
-function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href=siteBookingUrl;a.target='_blank';a.rel='noopener noreferrer'}
+function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open the booking page',p);a.href=siteBookingUrl;a.target='_blank';a.rel='noopener noreferrer'}
 async function bookingRequest(body){
  const res=await request(bookingEndpoint,{method:'POST',body:JSON.stringify(body)});
  if(!res||typeof res.status!=='string')throw new Error('The booking response could not be read.');
@@ -190,7 +192,7 @@ function chooseTime(previous=null){
    for(const start of data.slots){const day=localDate(zone.value,new Date(start));if(day!==lastDay){element('h4',new Intl.DateTimeFormat(undefined,{weekday:'long',month:'short',day:'numeric',timeZone:zone.value}).format(new Date(start)),results);lastDay=day}
     const b=bookingButton(results,new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit',timeZone:zone.value}).format(new Date(start)),()=>details(start,zone.value,data.duration,previous));b.setAttribute('aria-label',when(start,zone.value));
    }
-  }catch(err){results.textContent=errorText(err)+' You can also book on Cal.com.'}
+  }catch(err){results.textContent=errorText(err)+' You can also use the booking page.'}
   finally{busy(false);load.disabled=false;date.disabled=false;zone.disabled=false;thread.scrollTop=Math.max(0,c.parentElement.offsetTop-thread.offsetTop)}
  }
  loadTimes();

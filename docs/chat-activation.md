@@ -6,7 +6,7 @@ Superseded for the public site on 2026-10-29. `config.js` now sets an empty `cha
 
 The founder authorized an AWS backend managed with IaC, a $50 AWS monthly budget, a $100 Experiential AI budget, 30-day AWS transcript retention, and emailed transcript copies. The founder confirmed the AI budget was configured and the owner inbox was verified.
 
-`config.js` points to the qualified Sanifu HTTP API. It contains only a public endpoint and the existing template video URL. Credentials remain server-side in Secrets Manager. `docs/design/v1` is unchanged. The existing AI phone link from site main `42991e2` is preserved.
+On 28 September 2026, `config.js` pointed at the qualified Sanifu HTTP API. It contained only a public endpoint and the existing template video URL. Credentials remained server-side in Secrets Manager. `docs/design/v1` was unchanged. The AI phone link from site main `42991e2` was on the page then. That link was removed on 2026-10-29 and must not be restored.
 
 Public privacy copy and the visible chat status disclose emailed transcripts. The 30-day expiry applies to AWS transcripts from their last update; it does not erase email copies or Experiential captures, which currently have no fixed expiry. The delete confirmation describes these limits. Gateway throttling and AWS budget alerts are not hard monetary ceilings.
 

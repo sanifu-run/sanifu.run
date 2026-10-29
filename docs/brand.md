@@ -8,7 +8,7 @@ Reference: docs/design/v1 is preserved exactly. The public pages keep the approv
 
 sanifu.run presents the Zati Agency workshops. The canonical service, pricing, industry, and journal pages remain on https://zati.agency/. Do not describe a separate Sanifu coaching product.
 
-Audience: business owners and teams who want to improve how customers find them, reach them, and hear back. David works with them on an agreed setup. They practise running it and keep their accounts and the operating guidance for that work.
+Audience: business owners and teams who want to improve how customers find them, reach them, and hear back. David works with them on an agreed setup. They practise running it and keep their accounts and the operating guidance for that work. Published examples are a clearer website, an AI receptionist, an AI worker for a recurring office task, and an assistant for one defined piece of research, document review, or marketing draft. The visitor checks the result and decides what is used or shared.
 
 Booking: https://calendly.com/david-sire/30min — a free 30-minute discovery call. The visitor brings a website and one task, receives an AEO and GEO site audit report, and sees a relevant demo. They keep the report whether or not they book. A written scope and quote come before paid work. This site does not take payment.
 
