@@ -1,5 +1,9 @@
 # Sanifu name origin
 
+Still used as the explanation of the site name. The workshops themselves are the Zati Agency offer in `docs/brand.md`. The connected-chat deployment notes below describe the retired assistant and are not the current public state.
+
+
+
 Founder requested a small page section explaining his choice of Sanifu: proper, standard, and artful in Swahili, reflecting the values he embodies in his engineering practice and wants to share with the world.
 
 Added “Why Sanifu?” before the portfolio. Connected and prepared-answer greetings say “My name means…” and attribute the choice to David. The sibling chat backend's introduction policy and public about source carry the same explanation.

@@ -5,50 +5,57 @@ const form=document.getElementById('askForm');if(!form)return;
 const input=document.getElementById('q'),thread=document.getElementById('thread'),voice=document.getElementById('voiceBtn');
 const status=document.getElementById('chat-status'),select=document.getElementById('chat-history'),newButton=document.getElementById('chat-new'),deleteButton=document.getElementById('chat-delete');
 const endpoint=window.SANIFU_CONFIG?.chatEndpoint||'';
-const siteBookingUrl='https://cal.com/david-ndungu/sanifu-scope?utm_source=sanifu.run&utm_medium=website&utm_campaign=sanifu_pilot';
-const nameIntroduction='My name means proper, standard, and artful in Swahili, and it was chosen because those are the values David embodies in his engineering practice and wants to share with the world.';
+const siteBookingUrl=window.SANIFU_CONFIG?.bookingUrl||'https://calendly.com/david-sire/30min';
+const nameIntroduction='Sanifu means proper, standard, and artful in Swahili. David chose that name for his engineering practice. This site presents the Zati Agency workshops, which are also published at https://zati.agency/.';
 if(!endpoint){
  const panel=document.getElementById('chat-panel'),launch=document.getElementById('chat-launcher');
  panel.classList.add('unavailable');
  panel.setAttribute('aria-label','Sanifu prepared questions and answers');
  const disclosure=document.querySelector('.chat-disclosure');
- disclosure.textContent='Prepared answers only. No conversation is submitted or saved here. Please don’t share secrets or private client information.';
- document.querySelector('.chat-footnote').textContent='The manual brief is not sent to David. Download it to bring to your free call; he designs your custom agenda afterward.';
+ disclosure.textContent='Prepared answers only. No conversation is submitted or saved here. Please don’t share secrets, passwords, or private customer information.';
+ document.querySelector('.chat-footnote').textContent='The manual brief is not sent to David. Download it and bring it to your free discovery call. A brief is not a booking, a quote, or a purchase.';
  function open(){panel.hidden=false;launch.setAttribute('aria-expanded','true');document.getElementById('chat-close').focus()}
  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus()}
  document.querySelectorAll('[data-chat-open]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();open()}));launch.onclick=open;document.getElementById('chat-close').onclick=close;
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden&&!launch.hidden)close()});
- document.getElementById('chat-history-wrap').hidden=true;document.querySelector('.chat-actions').hidden=true;
+ document.getElementById('chat-history-wrap').hidden=true;document.getElementById('brief-generate').hidden=true;
+ const offlineBook=document.querySelector('[data-book-call]');
+ if(offlineBook)offlineBook.onclick=()=>window.open(siteBookingUrl,'_blank','noopener,noreferrer');
  const suggestions=document.getElementById('chat-suggestions');
  const quickAnswers=new Map([
-  ['I have an AI software idea for my business. Where do I start?','Try this: “When [person] needs to [task], they should be able to [result].” Then name one action and one check that would show it works. A small request tracker with sample data is one possible first exercise; David chooses the actual workshop scope with you on the free call.'],
-  ['I have a vibe-coded prototype. Can a senior engineer help me check it?','Choose one expected behavior and one failure case before accepting the result. For a request tracker, try a valid request, a blank title and a repeated submit. Check what actually happens. Those checks give evidence for that small slice; security, data handling and deployment need separate review. In a workshop, you practice making these decisions and running the checks.'],
-  ['What could I automate in my work?','Look for one repeated task with a clear input and a result you can check, such as preparing an editable summary from sample intake answers. Bring the real workflow to the free call, but keep private client data out of this site.'],
-  ['Can I start building my idea without programming experience?','You can explore the software path if you are comfortable using a computer. You define the task, direct a coding agent, inspect its work and test the result. David guides you; you do most of the building. Four hours is for an agreed small first version, not a whole production app.'],
-  ['Can you help me build and train an ML model?','Start with the decision the model should support and a simple rule it must beat. The ML path is usually for experienced engineers. David checks your task, data, baseline, supported model path and costs before proposing a workshop. Training may fit that scope; Zerfoo is the default when suitable. No accuracy result is promised.'],
-  ['What does a workshop cost?','The free fit-and-scope call comes first. The standard price is $1,200 for a four-hour workshop. The next four attendees pay $600 each, subject to availability and a written proposal. Preparation is included. External tools and deployment depend on the agreed scope.'],
-  ['Why pay for a workshop when I can use AI and free tutorials?','Choose Sanifu when you want live feedback on your own project: help defining one useful change, reviewing what the agent produced, and checking meaningful failure cases. The pilot includes four live hours, preparation, written next steps, and one batch of follow-up questions within seven days, up to 30 minutes of David’s time. You do the building. The free scope call helps you decide whether that guidance is worth the fee.'],
-  ['What projects has David built?','David’s projects include Zerfoo for ML in Go, Serenity for project memory, Dira for decision records, Kazi for checking agent work, AgentGavel for testing agent governance, and Ajent for sharing useful knowledge and software. Explore the portfolio below. These are examples of David’s work; tools are chosen for your scope.'],
-  ['What is AMOS?','AMOS is a planned open-source application foundation for accounts, subscriptions, deployment, and operations. David is creating it to help developers focus on their business features. Its vision does not establish a working release. It is not currently available as a Sanifu workshop platform or required for your workshop.'],
-  ['Who is David?','David’s published biography describes more than 20 years building software, including engineering roles at Zendesk, a consultancy and a software business. His work on testing, production systems and customer handover informs how he teaches you to choose a useful first slice, check it and keep working afterward. This is his own career account; Sanifu does not yet have verified learner outcomes.'],
-  ['What is your email and phone number?','Email david@ndungu.dev or call +1 (415) 234-7604. The phone line reaches Sanifu’s AI assistant, which can explain the workshops and point you to the free scope-call page. It cannot book the call for you by phone yet.']
+  ['What can a Zati workshop help my business with?','The workshops work on how customers find you, reach you, and hear back. Examples include clearer website pages, an AI receptionist for common caller questions, or an AI worker for a recurring task such as organizing inquiries or preparing a follow-up. A workshop can also set up an assistant to summarize research, pull key details from documents, or draft marketing content. You check that draft against the source and decide what is used or shared. Booking, transfers, and other connected actions are included only when they are in the agreed scope. You review anything before it is sent or acted on. These are possible projects, not a promise that every workshop includes all of them.'],
+  ['What does a workshop cost?','Private workshops are priced in USD per business. These are starting points; the actual work is agreed before booking. 2 hours is $500. 4 hours is $1,000. 8 hours is $2,000. 16 hours is $3,600. 32 hours is $6,400. Longer programmes can be split across sessions. If a workshop is a fit, you receive a written scope and quote before you book. The same prices are on https://zati.agency/pricing.'],
+  ['What happens on the free discovery call?','The discovery call is 30 minutes and free. Bring your website and one task. You receive an AEO and GEO site audit report and see a demo relevant to your business. You keep the report whether or not you book a workshop. The call does not start paid work. Book it at https://calendly.com/david-sire/30min.'],
+  ['Do I need technical experience?','Bring your knowledge of your business and the people who will use the setup. David works alongside you and explains the steps as you practise. Experience and fit are discussed on the free call.'],
+  ['Will this guarantee search rankings or AI citations?','No. A workshop can improve agreed pages and show you how to maintain them. Search and answer engines determine their own results. There is no promise of rankings, citations, or a particular business outcome.'],
+  ['What costs are separate from the workshop price?','Workshop prices cover the agreed live working time. Domain renewals, phone and AI usage, and paid software are separate. If free website hosting suits the project, it can be set up and you can learn to manage it, or you can keep a suitable existing host. Relevant costs are identified before the workshop.'],
+  ['What do I leave with?','You practise the agreed operating and maintenance steps and leave with guidance and next steps suited to the scope. You keep your accounts and the operating guidance for the agreed work. A package does not promise a complete website, receptionist, and worker setup. The written scope says what is included.'],
+  ['Who is David?','David Ndungu’s published biography describes 20+ years building software, including eight years at Zendesk, a development consultancy, and an e-commerce SaaS that reached 50 paying retailers. He leads the Zati Agency workshops. This site does not publish workshop outcome statistics.'],
+  ['What projects has David built?','Published projects include Zerfoo, Serenity, Dira, Kazi, AgentGavel, and Ajent. They are examples of David’s engineering work, not workshop deliverables or customer results. The Atlas on this site lists public repositories he started.'],
+  ['What is your email and business address?','Email david@sire.run. Postal mail: Sire Run, Inc., 584 Castro St Suite #4211, San Francisco, CA 94114, United States. Privacy questions: privacy@sire.run. This website does not publish a phone number. The free discovery call is at https://calendly.com/david-sire/30min.'],
+  ['Why is this site called Sanifu?','Sanifu means proper, standard, and artful in Swahili. David chose the name for his engineering practice. This website presents the Zati Agency workshops, which are also published at https://zati.agency/.']
  ]);
  suggestions.hidden=false;suggestions.setAttribute('aria-label','Prepared answers while the AI is offline');suggestions.querySelector('p').textContent='Quick answers';
  suggestions.querySelectorAll('button').forEach(button=>{button.hidden=!quickAnswers.has(button.dataset.prompt||button.textContent.trim())});
- const welcome=bubble('ai',nameIntroduction+'\n\nHave an AI software idea or a prototype you want to improve? Explore how senior engineering coaching can help you choose the next step.');
+ const welcome=bubble('ai',nameIntroduction+'\n\nBring a website and one task. These prepared answers explain the Zati workshops, the published prices, and the free discovery call.');
  const choices=document.createElement('div');choices.className='offline-options';
  const manual=document.createElement('a');manual.href='#manual';manual.textContent='Write a brief';choices.append(manual);
- const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free call';call.target='_blank';call.rel='noopener noreferrer';
- const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['Start my idea','I have an AI software idea for my business. Where do I start?'],['Check my prototype','I have a vibe-coded prototype. Can a senior engineer help me check it?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}
- const phone=document.createElement('a');phone.href='tel:+14152347604';phone.textContent='Call AI: +1 (415) 234-7604';
- const welcomeActions=document.createElement('div');welcomeActions.className='offline-options';welcomeActions.append(call,phone);welcome.append(primary,welcomeActions);document.querySelector('.conversation-tools').append(choices);
+ const call=document.createElement('a');call.href=siteBookingUrl;call.textContent='Book a free discovery call';call.target='_blank';call.rel='noopener noreferrer';
+ const primary=document.createElement('div');primary.className='chat-suggestions';for(const [label,question] of [['What it covers','What can a Zati workshop help my business with?'],['Workshop cost','What does a workshop cost?']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=()=>preparedReply(question);primary.append(button)}
+ const welcomeActions=document.createElement('div');welcomeActions.className='offline-options';welcomeActions.append(call);welcome.append(primary,welcomeActions);document.querySelector('.conversation-tools').append(choices);
  function preparedReply(question){
   bubble('user',question);
-  const text=quickAnswers.get(question)||'The AI intake is not connected yet, so I can’t answer a new question. Nothing was sent or saved. You can choose a prepared question, write a brief, or book a free call.';
+  const text=quickAnswers.get(question)||'The assistant is not connected, so this question was not sent or saved. Choose a prepared question, write a brief, or book a free discovery call.';
   const answer=bubble('ai',text);
-  if(question==='Who is David?'){const link=document.createElement('a');link.href='https://ndungu.dev/about/';link.textContent=' Read his published biography.';link.target='_blank';link.rel='noopener noreferrer';answer.append(link)}
-  if(question==='What projects has David built?'){const link=document.createElement('a');link.href='#portfolio';link.textContent=' Explore David’s projects.';answer.append(link)}
-  status.textContent=quickAnswers.has(question)?'Prepared answer · not AI-generated':'AI offline · your message was not sent';
+  const extras=new Map([
+   ['Who is David?',[' Read his published biography.','https://ndungu.dev/about/']],
+   ['What projects has David built?',[' Explore the projects on this page.','#portfolio']],
+   ['What does a workshop cost?',[' Book the free discovery call.','https://calendly.com/david-sire/30min']],
+   ['What happens on the free discovery call?',[' Open the booking page.','https://calendly.com/david-sire/30min']],
+   ['What is your email and business address?',[' Email david@sire.run.','mailto:david@sire.run']]
+  ]);
+  if(extras.has(question)){const [label,href]=extras.get(question);const link=document.createElement('a');link.href=href;link.textContent=label;if(href.startsWith('http')||href.startsWith('mailto:')){link.target='_blank';link.rel='noopener noreferrer'}answer.append(link)}
+  status.textContent=quickAnswers.has(question)?'Prepared answer · not AI-generated':'Assistant offline · your message was not sent';
   thread.scrollTop=thread.scrollHeight;
  }
  suggestions.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&!button.hidden)preparedReply(button.dataset.prompt||button.textContent.trim())});
@@ -59,7 +66,7 @@ if(!endpoint){
 const conversationURL=endpoint.replace(/\/ask$/,'/conversation'),titleURL=conversationURL+'/title',storageKey='sanifu-chat-v1';
 const pendingTitle='Start a conversation';
 function isPendingTitle(value){return typeof value==='string'&&['start a conversation','new conversation','sanifu conversation'].includes(value.toLowerCase().replace(/^[\s.!?…"']+|[\s.!?…"']+$/g,''))}
-const greeting='Hi! I’m Sanifu. '+nameIntroduction+'\n\nI can help you explore coaching for your AI software idea or a prototype you’ve already built. What’s your name and email so David can follow up with you? Sanifu will never sell your information or spam you. Sharing is optional — you can skip this and ask a question.';
+const greeting='Hi! I’m Sanifu. '+nameIntroduction+'\n\nI can explain the Zati Agency workshops, the published prices, and the free discovery call. What’s your name and email so David can follow up? Sharing is optional. Your information is not sold. You can skip this and ask a question.';
 const suggestions=document.getElementById('chat-suggestions');
 suggestions.addEventListener('click',e=>{if(e.target.matches('button')&&!asking&&!unanswered){input.value=e.target.dataset.prompt||e.target.textContent;input.focus()}});
 let briefSnapshot=null;
@@ -68,14 +75,16 @@ const titlePending=new Map();
 function randomToken(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('')}
 function save(deleted=''){try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){const known=new Map(stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string').map(c=>[c.token,{...c,title:isPendingTitle(c.title)?pendingTitle:c.title}]));for(const c of chats)known.set(c.token,{...c,title:isPendingTitle(c.title)?pendingTitle:c.title});known.delete(deleted);chats=Array.from(known.values())}localStorage.setItem(storageKey,JSON.stringify({current:token,chats}));persistent=true}catch{persistent=false}}
 function notice(){status.textContent=persistent?'Saved for your next visit in this browser. Transcript copies are emailed to David.':'Transcript copies are emailed to David, but this browser cannot save its recovery key. Keep this page open to continue.'}
-function options(){save();select.replaceChildren();for(const c of chats){const option=document.createElement('option');option.value=c.token;option.textContent=c.title;select.append(option)}select.value=token;const title=chats.find(c=>c.token===token)?.title;document.getElementById('chat-current-title').textContent=title&&!isPendingTitle(title)?title:'AI guide for your software project'}
+function options(){save();select.replaceChildren();for(const c of chats){const option=document.createElement('option');option.value=c.token;option.textContent=c.title;select.append(option)}select.value=token;const title=chats.find(c=>c.token===token)?.title;document.getElementById('chat-current-title').textContent=title&&!isPendingTitle(title)?title:'Guide for your workshop'}
 function briefReady(){const b=briefSnapshot?.brief;return !!b&&b.status!=='approved'&&b.sourceTurns===briefSnapshot.turns.length&&briefText.value===b.text}
 function busy(value){asking=value;document.querySelectorAll("#brief-panel button,#brief-generate").forEach(b=>b.disabled=value||unanswered);document.getElementById('brief-approve').disabled=value||unanswered||!briefReady();input.disabled=value||unanswered;voice.disabled=value||unanswered;form.querySelector('[type="submit"]').disabled=value||unanswered;select.disabled=value;newButton.disabled=value;deleteButton.disabled=value;document.querySelectorAll('[data-book-call]').forEach(b=>b.disabled=value||unanswered);form.setAttribute('aria-busy',String(value))}
 function render(text){
  const fragment=document.createDocumentFragment(),pattern=/\[([^\]]+)\]\(([^)\s]+)\)/g;let offset=0,match;
  function plain(value){value.split('\n').forEach((line,i)=>{if(i)fragment.append(document.createElement('br'));fragment.append(document.createTextNode(line))})}
  while((match=pattern.exec(text))){plain(text.slice(offset,match.index));let url;try{url=new URL(match[2])}catch{}
-  if(url&&url.href==='https://cal.com/david-ndungu/sanifu-scope'){const button=document.createElement('button');button.type='button';button.className='retry';button.dataset.bookCall='';button.textContent=match[1];button.onclick=openBooking;fragment.append(button)}else if(url&&url.protocol==='https:'&&(['sanifu.run','www.sanifu.run','cal.com','ajent.social','github.com','kazi.sire.run','sire.run'].includes(url.hostname)||url.href==='https://ndungu.dev/about/')){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
+  const allowedHosts=['sanifu.run','www.sanifu.run','zati.agency','www.zati.agency','calendly.com','ndungu.dev','www.ndungu.dev','zer.foo','serenity.sire.run','dira.sire.run','kazi.sire.run','sire.run','ajent.social','agentgavel.dev','github.com','bigtxmobiledetailing.com','www.bigtxmobiledetailing.com'];
+  const retiredScope=url&&(url.href.startsWith('https://cal.com/david-ndungu/sanifu-scope')||url.href.startsWith('https://cal.com/ndungu/sanifu-scope'));
+  if(url&&url.protocol==='https:'&&(allowedHosts.includes(url.hostname)||url.hostname.endsWith('.zati.agency')||retiredScope)){const link=document.createElement('a');link.href=retiredScope?siteBookingUrl:url.href;link.textContent=match[1];link.target='_blank';link.rel='noopener noreferrer';fragment.append(link)}else if(url&&url.protocol==='mailto:'&&url.pathname.toLowerCase()==='david@sire.run'){const link=document.createElement('a');link.href=url.href;link.textContent=match[1];fragment.append(link)}else plain(match[1]);offset=pattern.lastIndex;
  }plain(text.slice(offset));return fragment;
 }
 function bubble(role,text){const row=document.createElement('div');row.className='msg '+role;row.setAttribute('aria-label',role==='ai'?'Sanifu':'You');const body=document.createElement('div');body.className='bubble';const label=document.createElement('div');label.className='message-label';const avatar=document.createElement('span');avatar.className='message-avatar';avatar.setAttribute('aria-hidden','true');avatar.textContent=role==='ai'?'S':'Y';label.append(avatar,document.createTextNode(role==='ai'?'Sanifu':'You'));const content=document.createElement('div');content.className='message-content';content.append(endpoint?render(text):document.createTextNode(text));body.append(label,content);row.append(body);thread.append(row);thread.scrollTop=thread.scrollHeight;return body}
@@ -103,7 +112,7 @@ function fresh(){document.getElementById("brief-panel").hidden=true;briefSnapsho
 try{const stored=JSON.parse(localStorage.getItem(storageKey)||'null');if(stored&&Array.isArray(stored.chats)){chats=stored.chats.filter(c=>c&&/^[a-f0-9]{64}$/.test(c.token)&&typeof c.title==='string');token=chats.some(c=>c.token===stored.current)?stored.current:''}}catch{persistent=false}
 newButton.onclick=()=>{if(!asking){fresh();input.focus()}};
 select.onchange=()=>{if(asking)return;token=select.value;save();restore()};
-deleteButton.onclick=async()=>{if(asking||!confirm('Delete this conversation from saved chats and the AWS transcript archive? Emailed and AI provider copies remain. This does not cancel a Cal.com booking.'))return;busy(true);try{await request(conversationURL,{method:'DELETE'});chats=chats.filter(c=>c.token!==token);save(token);fresh();status.textContent='Conversation deleted. Start a new chat when you’re ready.'}catch(err){status.textContent=errorText(err)}finally{busy(false)}};
+deleteButton.onclick=async()=>{if(asking||!confirm('Delete this conversation from saved chats and the AWS transcript archive? Emailed and AI provider copies remain. This does not cancel a calendar booking.'))return;busy(true);try{await request(conversationURL,{method:'DELETE'});chats=chats.filter(c=>c.token!==token);save(token);fresh();status.textContent='Conversation deleted. Start a new chat when you’re ready.'}catch(err){status.textContent=errorText(err)}finally{busy(false)}};
 form.addEventListener('submit',e=>{e.preventDefault();if(bookingCard&&bookingCard.contains(e.submitter||document.activeElement))return;const q=input.value.trim();if(!unanswered&&q&&Array.from(q).length<=1000)ask(q)});
 input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();form.requestSubmit()}});
 
@@ -117,11 +126,11 @@ function card(title){
  return bookingCard;
 }
 function when(start,zone){return new Intl.DateTimeFormat(undefined,{dateStyle:'full',timeStyle:'short',timeZone:zone}).format(new Date(start))+' · '+zone}
-function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open Cal.com',p);a.href=siteBookingUrl;a.target='_blank';a.rel='noopener noreferrer'}
+function bookingFallback(parent){const p=element('p','',parent),a=element('a','Open the booking page',p);a.href=siteBookingUrl;a.target='_blank';a.rel='noopener noreferrer'}
 async function bookingRequest(body){
  const res=await request(bookingEndpoint,{method:'POST',body:JSON.stringify(body)});
  if(!res||typeof res.status!=='string')throw new Error('The booking response could not be read.');
- booking=res;const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Sanifu scope call';options()}
+ booking=res;const entry=chats.find(c=>c.token===token);if(entry&&isPendingTitle(entry.title)){entry.title='Discovery call';options()}
  return res;
 }
 async function refreshBooking(){
@@ -162,7 +171,7 @@ function localDate(zone,date=new Date()){return new Intl.DateTimeFormat('en-CA',
 function field(parent,label,type,value=''){const wrap=element('label',label,parent),input=element('input','',wrap);input.type=type;input.value=value;input.required=true;return input}
 async function openBooking(){if(asking||unanswered)return;setOpen(true);thread.scrollIntoView({block:'center'});if(booking)showBooking(booking);else chooseTime()}
 function chooseTime(previous=null){
- const c=card('Book a free Sanifu scope call');element('p','Choose a time to talk with David. Times are shown in your selected time zone.',c);
+ const c=card('Book a free discovery call');element('p','Choose a time to talk with David. The public booking page is Calendly. Times below are used only when a connected assistant still provides them.',c);
  const zoneLabel=element('label','Time zone',c),zone=element('select','',zoneLabel);
  let zoneName=previous?.timeZone||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
  const zones=Array.from(new Set([zoneName,'UTC',...(Intl.supportedValuesOf?Intl.supportedValuesOf('timeZone'):['America/Los_Angeles','America/New_York','Europe/London','Africa/Nairobi','Asia/Tokyo'])]));
@@ -183,7 +192,7 @@ function chooseTime(previous=null){
    for(const start of data.slots){const day=localDate(zone.value,new Date(start));if(day!==lastDay){element('h4',new Intl.DateTimeFormat(undefined,{weekday:'long',month:'short',day:'numeric',timeZone:zone.value}).format(new Date(start)),results);lastDay=day}
     const b=bookingButton(results,new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit',timeZone:zone.value}).format(new Date(start)),()=>details(start,zone.value,data.duration,previous));b.setAttribute('aria-label',when(start,zone.value));
    }
-  }catch(err){results.textContent=errorText(err)+' You can also book on Cal.com.'}
+  }catch(err){results.textContent=errorText(err)+' You can also use the booking page.'}
   finally{busy(false);load.disabled=false;date.disabled=false;zone.disabled=false;thread.scrollTop=Math.max(0,c.parentElement.offsetTop-thread.offsetTop)}
  }
  loadTimes();
@@ -204,7 +213,7 @@ function details(start,zone,duration,previous){
  c.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();review.click()}});
  name.focus({preventScroll:true});thread.scrollTop=thread.scrollHeight;
 }
-document.querySelectorAll('[data-book-call]').forEach(b=>b.onclick=openBooking);
+document.querySelectorAll('[data-book-call]').forEach(b=>b.onclick=()=>window.open(siteBookingUrl,'_blank','noopener,noreferrer'));
 const widget=document.getElementById('chat'),panel=document.getElementById('chat-panel'),launcher=document.getElementById('chat-launcher'),closeButton=document.getElementById('chat-close');
 function setOpen(open){if(!widget||!panel)return;panel.hidden=!open;widget.dataset.open=String(open);launcher.setAttribute('aria-expanded',String(open));if(open){thread.scrollTop=thread.scrollHeight;if(!input.disabled)input.focus({preventScroll:true})}else launcher.focus({preventScroll:true})}
 if(launcher)launcher.onclick=()=>setOpen(true);if(closeButton)closeButton.onclick=()=>setOpen(false);
@@ -214,7 +223,7 @@ if(location.hash==='#chat')setOpen(true);window.addEventListener('hashchange',()
 
 
 const briefText=document.getElementById('brief-text'),briefStatus=document.getElementById('brief-status');
-function showBrief(c){briefSnapshot=c;const b=c.brief;if(!b)return;document.getElementById('brief-panel').hidden=false;briefText.value=b.text;document.getElementById('brief-approve').disabled=b.status==='approved'||b.sourceTurns!==c.turns.length;briefStatus.textContent=b.status==='approved'?'Approved by you. David will design your workshop after your call.':b.sourceTurns!==c.turns.length?'Conversation changed. Generate a fresh brief or edit and save before approving.':'Draft — edit, save, then confirm its accuracy.'}
+function showBrief(c){briefSnapshot=c;const b=c.brief;if(!b)return;document.getElementById('brief-panel').hidden=false;briefText.value=b.text;document.getElementById('brief-approve').disabled=b.status==='approved'||b.sourceTurns!==c.turns.length;briefStatus.textContent=b.status==='approved'?'Approved by you. This is not a booking or a purchase. David follows up after the discovery call.':b.sourceTurns!==c.turns.length?'Conversation changed. Generate a fresh brief or edit and save before approving.':'Draft — edit, save, then confirm its accuracy.'}
 async function briefAction(action){if(asking)return;busy(true);briefStatus.textContent='Working…';try{await titlePending.get(token);const current=await request(conversationURL);if(action==='generate')briefSnapshot=current;else if(!briefSnapshot||current.version!==briefSnapshot.version){showBrief(current);throw new Error('The intake changed. Review the current version before continuing.')}const body={action,version:briefSnapshot.version};if(action==='save')body.text=briefText.value;if(action==='approve'){if(briefText.value!==briefSnapshot.brief?.text)throw new Error('Save your edits before approving.');body.confirmed=true}const result=await request(endpoint.replace(/\/ask$/,'/brief'),{method:'POST',body:JSON.stringify(body)});showBrief(result)}catch(e){briefStatus.textContent=errorText(e);document.getElementById('brief-panel').hidden=false;}finally{busy(false);document.getElementById('brief-approve').disabled=!briefReady()}}
 document.getElementById('brief-generate').onclick=()=>briefAction('generate');document.getElementById('brief-save').onclick=()=>briefAction('save');document.getElementById('brief-approve').onclick=()=>briefAction('approve');briefText.oninput=()=>{document.getElementById('brief-approve').disabled=true;briefStatus.textContent='Unsaved edits. Save before approving.'};document.getElementById('brief-download').onclick=()=>downloadBrief(briefText.value);
 document.querySelectorAll('[data-interest]').forEach(b=>b.addEventListener('click',()=>{if(!asking&&!unanswered){input.value=b.dataset.interest==='ml'?'I would like to explore an ML project.':b.dataset.interest==='software'?'I would like to build my own app.':'I would like help finding a small project to learn with.';input.focus()}}));
