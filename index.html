@@ -29,6 +29,19 @@
         <p class="podcast-lede">How do people actually run their businesses—and where does AI fit? Sanifu will bring decision-makers together to share the work, challenges, and choices behind what they do.</p>
         <a class="offer-primary" href="#about">Explore the show <span aria-hidden="true">↗</span></a>
       </section>
+      <section id="podcast-chat" class="podcast-section" aria-labelledby="podcast-chat-title">
+        <p class="eyebrow">Talk with Sanifu AI</p>
+        <h2 id="podcast-chat-title">Explore the conversation.</h2>
+        <p>Ask about the show, or explore a business question you might ask an industry peer.</p>
+        <p class="podcast-chat-notice">This is an AI assistant. Messages are sent to an AI provider and may be retained by service providers. Please do not share personal, confidential, or sensitive information. <a href="privacy.html">Privacy details</a></p>
+        <div id="podcast-thread" class="podcast-thread" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
+        <form id="podcast-chat-form">
+          <label for="podcast-chat-message">Your question</label>
+          <textarea id="podcast-chat-message" name="message" maxlength="1000" rows="3" required disabled></textarea>
+          <button id="podcast-chat-send" type="submit" disabled>Send question</button>
+          <p id="podcast-chat-status" role="status">The assistant is not available yet.</p>
+        </form>
+      </section>
       <section id="about" class="podcast-section" aria-labelledby="about-title">
         <p class="eyebrow">The show</p>
         <h2 id="about-title">Learn from people doing the work.</h2>
@@ -56,5 +69,6 @@
   </div>
   <script src="config.js"></script>
   <script src="podcast-video.js"></script>
+  <script src="podcast-chat.js"></script>
 </body>
 </html>
